@@ -1,14 +1,160 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: fixed;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.first-scroll {
+  position: fixed;
+  background: gray;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.first-scroll-content {
+  background: wheat;
+  width: 80vw;
+  height: 80vh;
+  /* margin: 90vh auto 90vh auto; */
+  margin-left: auto;
+  margin-right: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.second-scroll {
+  position: relative;
+  background: #8dc8ff;
+  width: 60vw;
+  height: 70vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.second-scroll-content {
+  /* margin: 60vh auto 60vh auto; */
+  margin-left: auto;
+  margin-right: auto;
+  width: 40vw;
+}
+
+.form-container {
+  background: #fffffe;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 1.5vmin;
+  margin-bottom: 10vh;
+}
+
+#label1 {
+  writing-mode: vertical-lr;
+  position: fixed;
+  font-size: 3vmin;
+  top: 30vh;
+  left: 1vw;
+}
+
+#label2 {
+  writing-mode: vertical-lr;
+  position: absolute;
+  font-size: 3vmin;
+  top: 110vh;
+  left: 11vw;
+  min-height: 40vh;
+}
+
+#label3 {
+  writing-mode: vertical-lr;
+  position: absolute;
+  font-size: 3vmin;
+  top: 110vh;
+  left: 21vw;
+  min-height: 40vh;
+  z-index: 1;
+}
+
+#label4 {
+  writing-mode: vertical-lr;
+  position: absolute;
+  font-size: 3vmin;
+  top: 71vh;
+  left: 8vw;
+  min-height: 40vh;
+}
+
+form h3 {
+  font-size: 3vh;
+  padding: 3vh 0;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+}
+form > input {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  font-size: 2vh;
+  line-height: 3vh;
+  height: 3.5vh;
+  color: black;
+  padding: 1vh 3vw;
+  margin-bottom: 2vh;
+  width: 100%;
+}
+
+form textarea {
+  width: 100%;
+  padding: 1vh 3vw;
+  height: 10vh;
+}
+
+form > div {
+  width: 100%;
+}
+
+form > div > div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2vh;
+
+  font-size: 2vh;
+  line-height: 2.5vh;
+  height: 2.5vh;
+}
+form > div > div > input {
+  height: 3vh;
+  margin-right: 1vw;
+}
+
+form > input[name='Submit'] {
+  width: 20vw;
+  height: 5vh;
+  background: yellow;
+  border-radius: 10px;
+  margin-top: 5vh;
+  margin-bottom: 7vh;
 }

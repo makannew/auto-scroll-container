@@ -2,7 +2,7 @@
   "name": "auto-scroll-container",
   "version": "1.0.0",
   "description": "React component provides scrollable div ",
-  "author": "makannew",
+  "author": "Makan Edrisi",
   "license": "MIT",
   "repository": "makannew/auto-scroll-container",
   "main": "dist/index.js",
