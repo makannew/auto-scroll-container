@@ -17,11 +17,16 @@ export const AutoScrollContainer = ({
   const contentDiv = useRef()
   const pos = useRef({ x: 0, offsetX: 0, y: 0, offsetY: 0 }).current
   const currentFocus = useRef(null)
+  const isAutoScrolling = useRef(false)
   const [divSize, setDivSize] = useState(() => null)
   const [content, setContent] = useState(() => null)
   const [needsScroll, setNeedsScroll] = useState(() => false)
 
   const handleScroll = (e) => {
+    if (isAutoScrolling.current) {
+      isAutoScrolling.current = false
+      return
+    }
     if (currentFocus.current) {
       setPos(currentFocus.current.x, currentFocus.current.y)
     } else {
@@ -65,6 +70,7 @@ export const AutoScrollContainer = ({
       pos.x * content.contentWidth -
       pos.offsetX * divSize.width +
       content.marginLeft
+    isAutoScrolling.current = true
   }, [content, needsScroll])
 
   useEffect(() => {
@@ -72,7 +78,7 @@ export const AutoScrollContainer = ({
     pos.offsetX = defaultViewPointX
     pos.y = moveScrollY
     pos.offsetY = defaultViewPointY
-    setNeedsScroll(() => true)
+    setNeedsScroll((needsScroll) => !needsScroll)
   }, [moveScrollX, moveScrollY, defaultViewPointX, defaultViewPointY])
 
   useEffect(() => {

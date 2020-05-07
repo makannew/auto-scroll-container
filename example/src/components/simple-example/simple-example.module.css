@@ -1,0 +1,113 @@
+.scroll-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.scroll-content {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-container {
+  background: #fffffe;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  margin-bottom: 50px;
+  width: 400px;
+}
+
+#label1 {
+  writing-mode: vertical-lr;
+  position: fixed;
+  font-size: 3vmin;
+  top: 30vh;
+  left: 1vw;
+}
+
+#label2 {
+  writing-mode: vertical-lr;
+  position: absolute;
+  font-size: 3vmin;
+  top: 110vh;
+  left: 11vw;
+  min-height: 40vh;
+}
+
+form h3 {
+  font-size: 24px;
+  padding: 20px 0;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+}
+form > input {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+  line-height: 24px;
+  height: 30px;
+  color: black;
+  padding: 10px 30px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  height: 100px;
+  font-size: 16px;
+}
+
+form > div {
+  width: 100%;
+}
+
+form > div > div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  font-size: 16px;
+  line-height: 24px;
+  height: 24px;
+}
+form > div > div > input {
+  height: 30px;
+  margin-right: 10px;
+}
+
+form > input[name='Submit'] {
+  width: 150px;
+  height: 40px;
+  padding-bottom: 35px;
+  background: yellow;
+  border-radius: 10px;
+  margin-top: 50px;
+  margin-bottom: 70px;
+}
+
+.description {
+  width: 400px;
+  background: #8dc8ff;
+  border-radius: 10px;
+  margin-bottom: 70px;
+  padding: 15px 20px;
+  text-align: left;
+}
