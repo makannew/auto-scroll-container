@@ -9,9 +9,9 @@
  *
  */
 import React, { useState } from 'react'
-import { AutoScrollContainer } from 'auto-scroll-container'
 import TwoScrollExample from './components/two-scroll-example/two-scroll-example'
 import SimpleExample from './components/simple-example/simple-example'
+import TwoDimensionExample from './components/two-dimension-example/two-dimension-example'
 
 const App = () => {
   const [example, setExample] = useState(1)
@@ -19,7 +19,7 @@ const App = () => {
   return (
     <>
       {example === 1 ? <SimpleExample /> : null}
-
+      {example === 2 ? <TwoDimensionExample /> : null}
       {example === 3 ? <TwoScrollExample /> : null}
       <div className='buttons'>
         <button onClick={() => setExample(1)}>

@@ -1,4 +1,5 @@
-import React, { useRef, useLayoutEffect, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import useDelayedState from 'use-delayed-state'
 
 export const AutoScrollContainer = ({
   children,
@@ -11,16 +12,20 @@ export const AutoScrollContainer = ({
   moveScrollX = 0, // fraction of total content size
   moveScrollY = 0,
   defaultViewPointX = 0.1,
-  defaultViewPointY = 0.1
+  defaultViewPointY = 0.1,
+  focusBoundary = 0.05,
+  autoScrollOnFocus = true,
+  debouncingDelay = 200
 }) => {
   const scrollDiv = useRef()
   const contentDiv = useRef()
   const pos = useRef({ x: 0, offsetX: 0, y: 0, offsetY: 0 }).current
   const currentFocus = useRef(null)
   const isAutoScrolling = useRef(false)
-  const [divSize, setDivSize] = useState(() => null)
+  const [divSize, setDivSize] = useDelayedState(() => null)
   const [content, setContent] = useState(() => null)
   const [needsScroll, setNeedsScroll] = useState(() => false)
+  const [initializing, setInitializing] = useState(() => true)
 
   const handleScroll = (e) => {
     if (isAutoScrolling.current) {
@@ -50,9 +55,13 @@ export const AutoScrollContainer = ({
   const handleFocus = (e) => {
     currentFocus.current = {
       x: e.target.offsetLeft,
-      y: e.target.offsetTop
+      y: e.target.offsetTop,
+      target: e.target
     }
     setPos(currentFocus.current.x, currentFocus.current.y)
+    if (autoScrollOnFocus) {
+      setNeedsScroll((needsScroll) => !needsScroll)
+    }
   }
 
   const handleBlure = (e) => {
@@ -60,17 +69,63 @@ export const AutoScrollContainer = ({
     setPos()
   }
 
+  const compensatedOffsets = () => {
+    let offsetY = pos.offsetY
+    let offsetX = pos.offsetX
+    if (currentFocus.current) {
+      const {
+        height,
+        width
+      } = currentFocus.current.target.getBoundingClientRect()
+      let hRatio = height / divSize.height
+      let wRatio = width / divSize.width
+      if (focusBoundary + hRatio + focusBoundary > 1) {
+        if (offsetY + hRatio / 2 > 0.5) {
+          offsetY = focusBoundary
+        } else {
+          offsetY = 1 - hRatio - focusBoundary
+        }
+      } else {
+        if (offsetY < focusBoundary) {
+          offsetY = focusBoundary
+        }
+        if (offsetY + hRatio > 1 - focusBoundary) {
+          offsetY = 1 - focusBoundary - hRatio
+        }
+      }
+      if (focusBoundary + wRatio + focusBoundary > 1) {
+        if (offsetX + wRatio / 2 > 0.5) {
+          offsetX = focusBoundary
+        } else {
+          offsetX = 1 - wRatio - focusBoundary
+        }
+      } else {
+        if (offsetX < focusBoundary) {
+          offsetX = focusBoundary
+        }
+        if (offsetX + wRatio > 1 - focusBoundary) {
+          offsetX = 1 - focusBoundary - wRatio
+        }
+      }
+    }
+    return { offsetY, offsetX }
+  }
+
   useEffect(() => {
     if (content === null) return
+    const { offsetY, offsetX } = compensatedOffsets()
     scrollDiv.current.scrollTop =
       pos.y * content.contentHeight -
-      pos.offsetY * divSize.height +
+      offsetY * divSize.height +
       content.marginTop
     scrollDiv.current.scrollLeft =
       pos.x * content.contentWidth -
-      pos.offsetX * divSize.width +
+      offsetX * divSize.width +
       content.marginLeft
     isAutoScrolling.current = true
+    if (initializing) {
+      setInitializing(() => false)
+    }
   }, [content, needsScroll])
 
   useEffect(() => {
@@ -126,7 +181,7 @@ export const AutoScrollContainer = ({
     const handleResize = () => {
       const width = scrollDiv.current.offsetWidth
       const height = scrollDiv.current.offsetHeight
-      setDivSize(() => ({ width, height }))
+      setDivSize(() => ({ width, height }), debouncingDelay)
     }
     addEventListener('resize', handleResize)
     handleResize()
@@ -142,6 +197,7 @@ export const AutoScrollContainer = ({
       onScroll={handleScroll}
       onFocusCapture={handleFocus}
       onBlurCapture={handleBlure}
+      style={initializing ? { visibility: 'hidden' } : null}
     >
       <div ref={contentDiv} className={contentClass}>
         {children}

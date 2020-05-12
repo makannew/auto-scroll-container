@@ -1,12 +1,14 @@
 import React from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
-import styles from '../simple-example/simple-example.module.css'
+import styles from '../two-dimension-example/two-dimension-example.module.css'
 
-export default function SimpleExample() {
+export default function TwoDimensionExample() {
   return (
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
+      contentMarginLeft={0.9}
+      contentMarginRight={0.9}
     >
       <h4 id={styles['label1']}>Scroll container</h4>
       <h4 id={styles['label2']}>Scrollablr Content</h4>
@@ -23,15 +25,33 @@ export default function SimpleExample() {
           <input type='text' placeholder='Last Name' autoComplete='lol' />
           <div>
             <div>
-              <input type='radio' id='option1' name='favorit' value='option1' />
+              <input
+                type='radio'
+                id='option1'
+                name='favorit'
+                value='option1'
+                autoComplete='lol'
+              />
               <label htmlFor='option1'>Option 1</label>
             </div>
             <div>
-              <input type='radio' id='option2' name='favorit' value='option2' />
+              <input
+                type='radio'
+                id='option2'
+                name='favorit'
+                value='option2'
+                autoComplete='lol'
+              />
               <label htmlFor='option2'>Option 2</label>
             </div>
             <div>
-              <input type='radio' id='option3' name='favorit' value='option3' />
+              <input
+                type='radio'
+                id='option3'
+                name='favorit'
+                value='option3'
+                autoComplete='lol'
+              />
               <label htmlFor='option3'>Option 3</label>
             </div>
           </div>
@@ -41,10 +61,17 @@ export default function SimpleExample() {
         </form>
       </div>
       <div className={styles['form-container']}>
-        <form>
+        <form autoComplete='off'>
           <h3>Sample content 2</h3>
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
+          <textarea
+            className={styles['story']}
+            placeholder='Story'
+            rows='25'
+            autoComplete='lol'
+          />
+
           <input type='submit' name='Submit' />
         </form>
       </div>

@@ -17,11 +17,17 @@ export default function TwoScrollExample() {
         contentClass={styles['second-scroll-content']}
       >
         <h4 id={styles['label4']}>Second scroll Content</h4>
+
+        <p className='description'>
+          Focus on an Input and remember its position then resize the page.
+          AutoScroll will maintain its position relative to new viewport size.
+        </p>
+
         <div className={styles['form-container']}>
           <form>
             <h3>Sample content 1</h3>
-            <input type='text' placeholder='First Name' />
-            <input type='text' placeholder='Last Name' />
+            <input type='text' placeholder='First Name' autoComplete='lol' />
+            <input type='text' placeholder='Last Name' autoComplete='lol' />
             <div>
               <div>
                 <input
@@ -51,16 +57,16 @@ export default function TwoScrollExample() {
                 <label htmlFor='option3'>Option 3</label>
               </div>
             </div>
-            <input type='text' placeholder='Phone Number' />
-            <textarea placeholder='Address' rows='5' />
+            <input type='text' placeholder='Phone Number' autoComplete='lol' />
+            <textarea placeholder='Address' rows='5' autoComplete='lol' />
             <input type='submit' name='Submit' />
           </form>
         </div>
         <div className={styles['form-container']}>
           <form>
             <h3>Sample content 2</h3>
-            <input type='text' placeholder='First Name' />
-            <input type='text' placeholder='Last Name' />
+            <input type='text' placeholder='First Name' autoComplete='lol' />
+            <input type='text' placeholder='Last Name' autoComplete='lol' />
             <input type='submit' name='Submit' />
           </form>
         </div>

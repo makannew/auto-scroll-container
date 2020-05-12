@@ -2,18 +2,15 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: scroll;
 }
 
 .scroll-content {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 2000px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
 }
 
 .form-container {
@@ -44,4 +41,8 @@
   top: 110vh;
   left: 11vw;
   min-height: 40vh;
+}
+
+.story {
+  height: 800px;
 }

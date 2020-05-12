@@ -49,5 +49,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "use-delayed-state": "^1.0.0"
+  }
 }

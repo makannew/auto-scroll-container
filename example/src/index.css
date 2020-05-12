@@ -35,3 +35,69 @@ button {
   text-align: left;
   box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
 }
+
+form h3 {
+  font-size: 24px;
+  padding: 20px 0;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+}
+form > input {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+  line-height: 24px;
+  height: 30px;
+  color: black;
+  padding: 10px 30px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  height: 100px;
+  font-size: 16px;
+}
+
+form > div {
+  width: 100%;
+}
+
+form > div > div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  font-size: 16px;
+  line-height: 24px;
+  height: 24px;
+}
+form > div > div > input {
+  height: 30px;
+  margin-right: 10px;
+}
+
+form > input[name='Submit'] {
+  width: 150px;
+  height: 40px;
+  padding-bottom: 35px;
+  background: #fff000;
+  border-radius: 10px;
+  margin-top: 50px;
+  margin-bottom: 70px;
+}
+
+.description {
+  width: 400px;
+  background: #8dc8ff;
+  border-radius: 10px;
+  margin-bottom: 70px;
+  padding: 15px 20px;
+  text-align: left;
+}
