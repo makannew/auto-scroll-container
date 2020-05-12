@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import useDelayedState from 'use-delayed-state'
 
 export const AutoScrollContainer = ({
@@ -32,17 +32,17 @@ export const AutoScrollContainer = ({
       isAutoScrolling.current = false
       return
     }
-    if (currentFocus.current) {
-      setPos(currentFocus.current.x, currentFocus.current.y)
-    } else {
-      setPos()
-    }
+    setPos()
   }
 
-  const setPos = (x, y) => {
+  const setPos = () => {
     const top = scrollDiv.current.scrollTop
     const left = scrollDiv.current.scrollLeft
-    if (x === undefined || y === undefined) {
+    let x, y
+    if (currentFocus.current) {
+      x = currentFocus.current.offsetLeft
+      y = currentFocus.current.offsetTop
+    } else {
       x = left + defaultViewPointX * divSize.width
       y = top + defaultViewPointY * divSize.height
     }
@@ -53,12 +53,9 @@ export const AutoScrollContainer = ({
   }
 
   const handleFocus = (e) => {
-    currentFocus.current = {
-      x: e.target.offsetLeft,
-      y: e.target.offsetTop,
-      target: e.target
-    }
-    setPos(currentFocus.current.x, currentFocus.current.y)
+    if (e.currentTarget !== e.target.offsetParent) return
+    currentFocus.current = e.target
+    setPos()
     if (autoScrollOnFocus) {
       setNeedsScroll((needsScroll) => !needsScroll)
     }
@@ -73,10 +70,7 @@ export const AutoScrollContainer = ({
     let offsetY = pos.offsetY
     let offsetX = pos.offsetX
     if (currentFocus.current) {
-      const {
-        height,
-        width
-      } = currentFocus.current.target.getBoundingClientRect()
+      const { height, width } = currentFocus.current.getBoundingClientRect()
       let hRatio = height / divSize.height
       let wRatio = width / divSize.width
       if (focusBoundary + hRatio + focusBoundary > 1) {
@@ -111,7 +105,7 @@ export const AutoScrollContainer = ({
     return { offsetY, offsetX }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (content === null) return
     const { offsetY, offsetX } = compensatedOffsets()
     scrollDiv.current.scrollTop =
