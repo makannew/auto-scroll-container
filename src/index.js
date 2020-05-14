@@ -40,26 +40,41 @@ export const AutoScrollContainer = ({
     if (content === null || divSize === null) return
     const top = scrollDiv.current.scrollTop
     const left = scrollDiv.current.scrollLeft
-    let x, y
-    if (currentFocus.current) {
-      x = currentFocus.current.offsetLeft
-      y = currentFocus.current.offsetTop
-    } else {
-      x = left + defaultViewPointX * divSize.width
-      y = top + defaultViewPointY * divSize.height
-    }
+    const [x, y] = currentFocus.current
+      ? relativeOffset(currentFocus.current)
+      : [
+          left + defaultViewPointX * divSize.width,
+          top + defaultViewPointY * divSize.height
+        ]
     pos.x = (x - content.marginLeft) / content.contentWidth
     pos.y = (y - content.marginTop) / content.contentHeight
     pos.offsetX = (x - left) / divSize.width
     pos.offsetY = (y - top) / divSize.height
   }
 
+  const relativeOffset = (element) => {
+    if (!element) {
+      return [0, 0]
+    }
+    const elementParent = element.offsetParent
+    const x = element.offsetLeft
+    const y = element.offsetTop
+    if (elementParent === topDiv.current.offsetParent || !elementParent) {
+      return [x, y]
+    } else {
+      const [xParent, yParent] = relativeOffset(elementParent)
+      return [
+        x + xParent - elementParent.scrollLeft,
+        y + yParent - elementParent.scrollTop
+      ]
+    }
+  }
+
   const handleFocus = (e) => {
-    if (e.currentTarget !== e.target.offsetParent) return
     currentFocus.current = e.target
     setPos()
     if (autoScrollOnFocus) {
-      setNeedsScroll((needsScroll) => !needsScroll)
+      scrollToNewPos()
     }
   }
 
@@ -107,7 +122,7 @@ export const AutoScrollContainer = ({
     return { offsetY, offsetX }
   }
 
-  useLayoutEffect(() => {
+  const scrollToNewPos = () => {
     if (content === null) return
     const { offsetY, offsetX } = compensatedOffsets()
     scrollDiv.current.scrollTop =
@@ -119,6 +134,10 @@ export const AutoScrollContainer = ({
       offsetX * divSize.width +
       content.marginLeft
     isAutoScrolling.current = true
+  }
+
+  useLayoutEffect(() => {
+    scrollToNewPos()
     if (initializing) {
       setInitializing(() => false)
     }
@@ -195,7 +214,7 @@ export const AutoScrollContainer = ({
       ref={scrollDiv}
       className={className}
       onScroll={handleScroll}
-      onFocusCapture={handleFocus}
+      onFocus={handleFocus}
       onBlurCapture={handleBlure}
       style={initializing ? { visibility: 'hidden' } : null}
     >
