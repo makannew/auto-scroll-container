@@ -19,7 +19,7 @@ export const AutoScrollContainer = ({
 }) => {
   const scrollDiv = useRef()
   const contentDiv = useRef()
-  const topDiv = useRef()
+  const rightMarginDiv = useRef()
   const pos = useRef({ x: 0, offsetX: 0, y: 0, offsetY: 0 }).current
   const currentFocus = useRef(null)
   const isAutoScrolling = useRef(false)
@@ -30,6 +30,7 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     if (isAutoScrolling.current) {
+      e.stopPropagation()
       isAutoScrolling.current = false
       return
     }
@@ -59,7 +60,10 @@ export const AutoScrollContainer = ({
     const elementParent = element.offsetParent
     const x = element.offsetLeft
     const y = element.offsetTop
-    if (elementParent === topDiv.current.offsetParent || !elementParent) {
+    if (
+      elementParent === rightMarginDiv.current.offsetParent ||
+      !elementParent
+    ) {
       return [x, y]
     } else {
       const [xParent, yParent] = relativeOffset(elementParent)
@@ -169,7 +173,7 @@ export const AutoScrollContainer = ({
       contentStyle.marginLeft = `${marginLeft}px`
     }
     if (contentMarginRight) {
-      topDiv.current.style.left = `${
+      rightMarginDiv.current.style.left = `${
         scrollDiv.current.scrollWidth + marginRight
       }px`
     }
@@ -225,11 +229,11 @@ export const AutoScrollContainer = ({
       style={initializing ? { visibility: 'hidden' } : null}
     >
       <div
-        ref={topDiv}
+        ref={rightMarginDiv}
         style={{
           position: 'absolute',
-          width: '10px',
-          height: '10px',
+          width: '1px',
+          height: '1px',
           top: '0px',
           visibility: 'hidden'
         }}
