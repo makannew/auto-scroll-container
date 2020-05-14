@@ -9,10 +9,9 @@ export default function SimpleExample() {
       contentClass={styles['scroll-content']}
     >
       <h4 id={styles['label1']}>Scroll container</h4>
-      <h4 id={styles['label2']}>Scrollablr Content</h4>
+      <h4 id={styles['label2']}>Scroll Content</h4>
       <p className='description'>
-        Focus on an Input and remember its position then resize the page.
-        AutoScroll will maintain its position relative to new viewport size.
+        Focused element will automatically scroll to visible area.
       </p>
 
       <div className={styles['form-container']}>

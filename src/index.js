@@ -5,8 +5,8 @@ export const AutoScrollContainer = ({
   children,
   className = '',
   contentClass = '',
-  contentMarginTop = 0.9, // fraction of visible div size
-  contentMarginBottom = 0.9,
+  contentMarginTop = 0.5, // fraction of visible div size
+  contentMarginBottom = 0.5,
   contentMarginLeft = 0,
   contentMarginRight = 0,
   moveScrollX = 0, // fraction of total content size
@@ -19,6 +19,7 @@ export const AutoScrollContainer = ({
 }) => {
   const scrollDiv = useRef()
   const contentDiv = useRef()
+  const topDiv = useRef()
   const pos = useRef({ x: 0, offsetX: 0, y: 0, offsetY: 0 }).current
   const currentFocus = useRef(null)
   const isAutoScrolling = useRef(false)
@@ -36,6 +37,7 @@ export const AutoScrollContainer = ({
   }
 
   const setPos = () => {
+    if (content === null || divSize === null) return
     const top = scrollDiv.current.scrollTop
     const left = scrollDiv.current.scrollLeft
     let x, y
@@ -130,13 +132,14 @@ export const AutoScrollContainer = ({
     setNeedsScroll((needsScroll) => !needsScroll)
   }, [moveScrollX, moveScrollY, defaultViewPointX, defaultViewPointY])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (divSize === null) return
     const contentStyle = contentDiv.current.style
     const marginTop = contentMarginTop * divSize.height
     const marginBottom = contentMarginBottom * divSize.height
     const marginLeft = contentMarginLeft * divSize.width
     const marginRight = contentMarginRight * divSize.width
+
     if (contentMarginTop) {
       contentStyle.marginTop = `${marginTop}px`
     }
@@ -147,8 +150,11 @@ export const AutoScrollContainer = ({
       contentStyle.marginLeft = `${marginLeft}px`
     }
     if (contentMarginRight) {
-      contentStyle.marginRight = `${marginRight}px`
+      topDiv.current.style.left = `${
+        scrollDiv.current.scrollWidth + marginRight
+      }px`
     }
+
     const scrollWidth = scrollDiv.current.scrollWidth
     const scrollHeight = scrollDiv.current.scrollHeight
     const contentWidth = scrollWidth - marginLeft - marginRight
@@ -193,6 +199,17 @@ export const AutoScrollContainer = ({
       onBlurCapture={handleBlure}
       style={initializing ? { visibility: 'hidden' } : null}
     >
+      <div
+        ref={topDiv}
+        style={{
+          position: 'absolute',
+          width: '10px',
+          height: '10px',
+          top: '0px',
+          visibility: 'hidden'
+        }}
+      ></div>
+
       <div ref={contentDiv} className={contentClass}>
         {children}
       </div>

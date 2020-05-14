@@ -9,28 +9,33 @@
 
 .first-scroll-content {
   background: wheat;
-  width: 80vw;
-  height: 80vh;
+  width: 600px;
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  padding: 30px 0;
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
 }
 
 .second-scroll {
   position: relative;
   background: #8dc8ff;
-  width: 60vw;
-  height: 70vh;
+  width: 400px;
+  height: 500px;
   overflow-x: hidden;
   overflow-y: scroll;
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
 }
 
 .second-scroll-content {
   margin-left: auto;
   margin-right: auto;
-  width: 40vw;
+  width: 300px;
 }
 
 .form-container {
@@ -49,16 +54,16 @@
   writing-mode: vertical-lr;
   position: fixed;
   font-size: 3vmin;
-  top: 30vh;
-  left: 1vw;
+  top: 200px;
+  left: 10px;
 }
 
 #label2 {
   writing-mode: vertical-lr;
   position: absolute;
   font-size: 3vmin;
-  top: 110vh;
-  left: 11vw;
+  top: 680px;
+  left: 140px;
   min-height: 40vh;
 }
 
@@ -66,8 +71,8 @@
   writing-mode: vertical-lr;
   position: absolute;
   font-size: 3vmin;
-  top: 110vh;
-  left: 21vw;
+  top: 1200px;
+  left: 230px;
   min-height: 40vh;
   z-index: 1;
 }
@@ -76,7 +81,7 @@
   writing-mode: vertical-lr;
   position: absolute;
   font-size: 3vmin;
-  top: 71vh;
-  left: 8vw;
+  top: 595px;
+  left: 25px;
   min-height: 40vh;
 }

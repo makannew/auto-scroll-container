@@ -7,13 +7,16 @@
 }
 
 .scroll-content {
-  width: 2000px;
+  width: 1200px;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
 }
 
+.horizontal-content {
+}
+
 .form-container {
+  width: 400px;
   background: #fffffe;
   display: flex;
   flex-direction: column;
@@ -22,8 +25,7 @@
   border: 1px solid rgba(0, 0, 0, 0.13);
   box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  margin-bottom: 50px;
-  width: 400px;
+  margin-bottom: auto;
 }
 
 #label1 {
@@ -35,12 +37,11 @@
 }
 
 #label2 {
-  writing-mode: vertical-lr;
   position: absolute;
   font-size: 3vmin;
-  top: 110vh;
-  left: 11vw;
-  min-height: 40vh;
+  top: 460px;
+  left: 950px;
+  min-width: 40vh;
 }
 
 .story {

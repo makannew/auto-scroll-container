@@ -7,14 +7,11 @@ export default function TwoDimensionExample() {
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
-      contentMarginLeft={0.9}
-      contentMarginRight={0.9}
+      contentMarginLeft={0.5}
+      contentMarginRight={0.5}
     >
-      <h4 id={styles['label1']}>Scroll container</h4>
-      <h4 id={styles['label2']}>Scrollablr Content</h4>
       <p className='description'>
-        Focus on an Input and remember its position then resize the page.
-        AutoScroll will maintain its position relative to new viewport size.
+        Focused element will automatically scroll to visible area.
       </p>
 
       <div className={styles['form-container']}>

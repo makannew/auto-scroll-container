@@ -2,12 +2,12 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: scroll;
 }
 
 .scroll-content {
-  width: 100%;
+  width: 400px;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -41,7 +41,7 @@
   writing-mode: vertical-lr;
   position: absolute;
   font-size: 3vmin;
-  top: 110vh;
-  left: 11vw;
+  top: 605px;
+  left: 210px;
   min-height: 40vh;
 }

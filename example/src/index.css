@@ -94,7 +94,9 @@ form > input[name='Submit'] {
 }
 
 .description {
-  width: 400px;
+  width: 300px;
+  min-width: 300px;
+  height: 75px;
   background: #8dc8ff;
   border-radius: 10px;
   margin-bottom: 70px;
