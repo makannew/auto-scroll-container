@@ -209,6 +209,12 @@ export const AutoScrollContainer = ({
     }
   }, [])
 
+  useLayoutEffect(() => {
+    if (getComputedStyle(scrollDiv.current).position === 'static') {
+      scrollDiv.current.style.position = 'relative'
+    }
+  }, [])
+
   return (
     <div
       ref={scrollDiv}
