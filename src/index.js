@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import useDelayedState from 'use-delayed-state'
+import useDelayedFunction from './use-delayed-function'
 
 export const AutoScrollContainer = ({
   children,
@@ -141,6 +142,7 @@ export const AutoScrollContainer = ({
   }
 
   useLayoutEffect(() => {
+    //setPos()
     scrollToNewPos()
     if (initializing) {
       setInitializing(() => false)
@@ -152,7 +154,8 @@ export const AutoScrollContainer = ({
     pos.offsetX = defaultViewPointX
     pos.y = moveScrollY
     pos.offsetY = defaultViewPointY
-    setNeedsScroll((needsScroll) => !needsScroll)
+    setNeedsScroll((needsScroll) => !needsScroll) // remove
+    // scrollToNewPos()
   }, [moveScrollX, moveScrollY, defaultViewPointX, defaultViewPointY])
 
   useLayoutEffect(() => {
@@ -207,7 +210,7 @@ export const AutoScrollContainer = ({
       setDivSize(() => ({ width, height }), debouncingDelay)
     }
     addEventListener('resize', handleResize)
-    handleResize()
+    handleResize() // remove
     return () => {
       removeEventListener('resize', handleResize)
     }
