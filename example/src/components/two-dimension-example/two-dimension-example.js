@@ -7,8 +7,8 @@ export default function TwoDimensionExample() {
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
-      contentMarginLeft={0.5}
-      contentMarginRight={0.5}
+      marginLeft={0.5}
+      marginRight={0.5}
     >
       <p className='description'>
         Focused element will automatically scroll to visible area.
