@@ -1,6 +1,5 @@
 .scroll-container {
-  position: absolute;
-  width: 100vw;
+  flex-grow: 1;
   height: 100vh;
   overflow-x: scroll;
   overflow-y: scroll;

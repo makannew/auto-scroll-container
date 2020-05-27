@@ -17,11 +17,14 @@ export const AutoScrollContainer = ({
   setScrollY,
   setViewX,
   setViewY,
+  smoothScroll,
   viewMargin = 0.05,
   autoScrollOnFocus = true,
   debouncingDelay = 200,
-  signature = 'data-auto-scroll-container-signature'
+  signature = 'data-auto-scroll-container-signature',
+  setAnalizer
 }) => {
+  const totalCall = useRef(0)
   const scrollDiv = useRef()
   const contentDiv = useRef()
   const rightMarginDiv = useRef()
@@ -51,6 +54,8 @@ export const AutoScrollContainer = ({
   }).current
 
   const handleScroll = (e) => {
+    ++totalCall.current
+    setAnalizer(totalCall.current)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
@@ -300,8 +305,10 @@ export const AutoScrollContainer = ({
 
   function calcDivSize() {
     scroll.divSize = {
-      width: scrollDiv.current.offsetWidth,
-      height: scrollDiv.current.offsetHeight
+      // width: scrollDiv.current.offsetWidth,
+      // height: scrollDiv.current.offsetHeight
+      width: scrollDiv.current.clientWidth,
+      height: scrollDiv.current.clientHeight
     }
   }
 

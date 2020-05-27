@@ -2,15 +2,23 @@ import React from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../two-scroll-example/two-scroll-example.module.css'
 
-export default function TwoScrollExample() {
+export default function TwoScrollExample({ className, contentClass, ...rest }) {
+  const {
+    nestedScrollY,
+    nestedViewY,
+    setNestedScrollY,
+    setNestedViewY,
+    nestedMarginTop,
+    nestedMarginBottom
+  } = rest
   return (
     <AutoScrollContainer
       className={styles['first-scroll']}
       contentClass={styles['first-scroll-content']}
+      {...rest}
+      marginLeft={0}
+      marginRight={0}
     >
-      <h4 id={styles['label1']}>First Scroll</h4>
-      <h4 id={styles['label2']}>First scroll Content</h4>
-      <h4 id={styles['label3']}>Second Scroll</h4>
       <div className={styles['form-container']}>
         <form>
           <h3>Inside Scroll 1</h3>
@@ -22,6 +30,12 @@ export default function TwoScrollExample() {
       <AutoScrollContainer
         className={styles['second-scroll']}
         contentClass={styles['second-scroll-content']}
+        scrollY={nestedScrollY}
+        viewY={nestedViewY}
+        setScrollY={setNestedScrollY}
+        setViewY={setNestedViewY}
+        marginTop={nestedMarginTop}
+        marginBottom={nestedMarginBottom}
       >
         <h4 id={styles['label4']}>Second scroll Content</h4>
 

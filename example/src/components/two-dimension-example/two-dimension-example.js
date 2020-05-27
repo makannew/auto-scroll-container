@@ -19,7 +19,7 @@ export default function TwoDimensionExample({
 
       <div className={styles['form-container']}>
         <form>
-          <h3>Sample content 1</h3>
+          <h3>Sample form 1</h3>
 
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
@@ -62,7 +62,7 @@ export default function TwoDimensionExample({
       </div>
       <div className={styles['form-container']}>
         <form autoComplete='off'>
-          <h3>Sample content 2</h3>
+          <h3>Sample form 2</h3>
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
           <textarea

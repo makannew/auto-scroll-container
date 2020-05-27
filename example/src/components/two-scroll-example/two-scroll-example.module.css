@@ -1,9 +1,7 @@
 .first-scroll {
-  position: fixed;
-  background: gray;
-  width: 100vw;
+  flex-grow: 1;
   height: 100vh;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: scroll;
 }
 
