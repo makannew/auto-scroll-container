@@ -2,13 +2,16 @@ import React from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../two-dimension-example/two-dimension-example.module.css'
 
-export default function TwoDimensionExample() {
+export default function TwoDimensionExample({
+  className,
+  contentClass,
+  ...rest
+}) {
   return (
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
-      marginLeft={0.5}
-      marginRight={0.5}
+      {...rest}
     >
       <p className='description'>
         Focused element will automatically scroll to visible area.

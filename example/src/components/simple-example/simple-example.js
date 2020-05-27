@@ -2,11 +2,12 @@ import React from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../simple-example/simple-example.module.css'
 
-export default function SimpleExample() {
+export default function SimpleExample({ className, contentClass, ...rest }) {
   return (
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
+      {...rest}
     >
       <h4 id={styles['label1']}>Scroll container</h4>
       <h4 id={styles['label2']}>Scroll Content</h4>
