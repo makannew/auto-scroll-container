@@ -65,7 +65,7 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(`v1 ${browserScrolling.current} ${totalCall.current}`)
+    setAnalizer(`v2 ${browserScrolling.current} ${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
@@ -89,8 +89,14 @@ export const AutoScrollContainer = ({
     addChildObserver()
     if (autoScrollOnFocus) {
       setBrowserScrolling('just focused')
-      setBrowserScrollingLater('no').then(scrollToNewPos)
+      setBrowserScrollingLater('no').then(() => {
+        if (browserScrolling.current !== 'stupid scrolling') {
+          scrollToNewPos()
+          setPosState()
+        }
+      })
       // scrollToNewPos()
+      return
     }
     setPosState()
   }
