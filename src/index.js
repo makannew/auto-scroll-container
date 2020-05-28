@@ -74,8 +74,13 @@ export const AutoScrollContainer = ({
       return
     }
     if (browserScrolling.current === 'stupid scrolling') {
-      setAnalizer(`stupid ${analizer}`)
-
+      setAnalizer((analizer) => `stupid ${analizer}`)
+      setAnalizer(
+        (analizer) =>
+          `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+            2
+          )} ${analizer}`
+      )
       e.stopImmediatePropagation()
       e.stopPropagation()
       e.preventDefault()
@@ -83,9 +88,10 @@ export const AutoScrollContainer = ({
     }
     setPos()
     setAnalizer(
-      `S=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-        2
-      )} ${analizer}`
+      (analizer) =>
+        `S=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+          2
+        )} ${analizer}`
     )
 
     setPosState()
@@ -97,9 +103,10 @@ export const AutoScrollContainer = ({
     scroll.immediateChild = null
     setPos()
     setAnalizer(
-      `F=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-        2
-      )} ${analizer}`
+      (analizer) =>
+        `F=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+          2
+        )} ${analizer}`
     )
 
     addChildObserver()
@@ -120,6 +127,12 @@ export const AutoScrollContainer = ({
     removeChildObserver()
     currentFocus.current = null
     setPos()
+    setAnalizer(
+      (analizer) =>
+        `B=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+          2
+        )} ${analizer}`
+    )
     setPosState()
   }
 
@@ -159,7 +172,7 @@ export const AutoScrollContainer = ({
       setBrowserScrolling('stupid scrolling')
     }
     debounceResize().then(() => {
-      setAnalizer(`dHit=${scroll.divSize.height} ${analizer}`)
+      setAnalizer((analizer) => `dHit=${scroll.divSize.height} ${analizer}`)
 
       setBrowserScrolling('no')
       enableScroll()
@@ -172,7 +185,7 @@ export const AutoScrollContainer = ({
     scrollDiv.current.style.visibility = 'hidden'
     setPositionRelative()
     calcDivSize()
-    setAnalizer(`iniHit=${scroll.divSize.height} ${analizer}`)
+    setAnalizer((analizer) => `iniHit=${scroll.divSize.height} ${analizer}`)
 
     adjustScroll()
     scroll.initializing = false
@@ -366,6 +379,8 @@ export const AutoScrollContainer = ({
       width: rect.width,
       height: rect.height
     }
+    setAnalizer((analizer) => `rectTop=${rect.top} ${analizer}`)
+    console.log(rect.top)
   }
 
   function calcMargins() {

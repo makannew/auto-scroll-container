@@ -29,7 +29,7 @@ const App = () => {
   const [nestedMarginTop, setNestedMarginTop] = useState(0.5)
   const [nestedMarginBottom, setNestedMarginBottom] = useState(0.5)
 
-  const [analizer, setAnalizer] = useState('')
+  const [analizer, setAnalizer] = useState(() => '')
 
   function resetScrolls() {
     setScrollX(0)
