@@ -18,6 +18,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#temp {
+  position: fixed;
+  top: 5px;
+  left: 182px;
+  width: 100px;
+  height: 300px;
+  overflow: scroll;
+  z-index: 3;
+}
 .app {
   position: fixed;
   top: 0;

@@ -23,7 +23,8 @@ export const AutoScrollContainer = ({
   debouncingDelay = 200,
   keyboardPopDelay = 200,
   signature = 'data-auto-scroll-container-signature',
-  setAnalizer
+  setAnalizer,
+  analizer
 }) => {
   const totalCall = useRef(0)
   const scrollDiv = useRef()
@@ -66,7 +67,7 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(`v5 ${browserScrolling.current} ${totalCall.current}`)
+    setAnalizer(`${analizer} Scroll=${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
@@ -144,6 +145,8 @@ export const AutoScrollContainer = ({
       setBrowserScrolling('stupid scrolling')
     }
     debounceResize().then(() => {
+      setAnalizer(`${analizer} dHit=${scroll.divSize.height}`)
+
       setBrowserScrolling('no')
       enableScroll()
       adjustScroll()
@@ -155,6 +158,8 @@ export const AutoScrollContainer = ({
     scrollDiv.current.style.visibility = 'hidden'
     setPositionRelative()
     calcDivSize()
+    setAnalizer(`${analizer} iniHit=${scroll.divSize.height}`)
+
     adjustScroll()
     scroll.initializing = false
     scrollDiv.current.style.visibility = 'visible'
@@ -403,6 +408,7 @@ export const AutoScrollContainer = ({
   }
 
   function enableScroll() {
+    if (!scrollOverflow.current) return
     const style = scrollDiv.current.style
     style.overflow = scrollOverflow.current.overflow
     style.overflowX = scrollOverflow.current.overflowX

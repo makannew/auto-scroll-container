@@ -97,7 +97,8 @@ const App = () => {
     nestedViewY,
     nestedMarginTop,
     nestedMarginBottom,
-    setAnalizer
+    setAnalizer,
+    analizer
   }
   const activePara = {
     setScrollY,
@@ -121,7 +122,7 @@ const App = () => {
         >
           Menu
         </h3>
-        <h4>{analizer}</h4>
+        <p id='temp'>{analizer}</p>
         <div className='containers'>
           <button
             onClick={() => {
