@@ -20,8 +20,8 @@ export const AutoScrollContainer = ({
   smoothScroll,
   viewMargin = 0.05,
   autoScrollOnFocus = true,
-  debouncingDelay = 2000,
-  keyboardPopDelay = 400,
+  debouncingDelay = 200,
+  keyboardPopDelay = 200,
   signature = 'data-auto-scroll-container-signature',
   setAnalizer
 }) => {
@@ -65,13 +65,14 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(`v3 ${browserScrolling.current} ${totalCall.current}`)
+    setAnalizer(`v4 ${browserScrolling.current} ${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
       return
     }
     if (browserScrolling.current === 'stupid scrolling') {
+      e.stopImmediatePropagation()
       e.stopPropagation()
       e.preventDefault()
       return
@@ -334,10 +335,10 @@ export const AutoScrollContainer = ({
 
   function calcDivSize() {
     scroll.divSize = {
-      // width: scrollDiv.current.offsetWidth,
-      // height: scrollDiv.current.offsetHeight
-      width: scrollDiv.current.clientWidth,
-      height: scrollDiv.current.clientHeight
+      width: scrollDiv.current.offsetWidth,
+      height: scrollDiv.current.offsetHeight
+      // width: scrollDiv.current.clientWidth,
+      // height: scrollDiv.current.clientHeight
     }
   }
 
