@@ -21,6 +21,7 @@ export const AutoScrollContainer = ({
   viewMargin = 0.05,
   autoScrollOnFocus = true,
   debouncingDelay = 2000,
+  keyboardPopDelay = 400,
   signature = 'data-auto-scroll-container-signature',
   setAnalizer
 }) => {
@@ -30,6 +31,7 @@ export const AutoScrollContainer = ({
   const rightMarginDiv = useRef()
   const currentFocus = useRef(null)
   const childObserver = useRef(null)
+  const browserScrolling = useRef('no')
   const prevPos = useRef({
     x: scrollX,
     offsetX: viewX,
@@ -37,6 +39,10 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
+  const [setBrowserScrollingLater] = useDelayedFunction(
+    setBrowserScrolling,
+    keyboardPopDelay
+  )
 
   const scroll = useRef({
     initializing: true,
@@ -53,12 +59,22 @@ export const AutoScrollContainer = ({
     }
   }).current
 
+  function setBrowserScrolling(status) {
+    browserScrolling.current = status
+  }
+
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(totalCall.current)
+    setAnalizer(`v1 ${browserScrolling.current} ${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
+      return
+    }
+    if (browserScrolling.current === 'stupid scrolling') {
+      e.stopPropagation()
+      e.preventDefault()
+      console.log('stupid scrolling')
       return
     }
     setPos()
@@ -72,7 +88,9 @@ export const AutoScrollContainer = ({
     setPos()
     addChildObserver()
     if (autoScrollOnFocus) {
-      scrollToNewPos()
+      setBrowserScrolling('just focused')
+      setBrowserScrollingLater('no').then(scrollToNewPos)
+      // scrollToNewPos()
     }
     setPosState()
   }
@@ -105,6 +123,9 @@ export const AutoScrollContainer = ({
 
   function resizeByChild() {
     if (scroll.initializing) return
+    // if (browserScrolling.current==="just focused"){
+    //   setBrowserScrolling("stupid scrolling")
+    // }
     calcDivSize()
     adjustScroll()
     resizeParent()
@@ -112,6 +133,9 @@ export const AutoScrollContainer = ({
 
   function handleResize() {
     if (scroll.initializing || scroll.immediateChild) return
+    if (browserScrolling.current === 'just focused') {
+      setBrowserScrolling('stupid scrolling')
+    }
     debounceResize().then(() => {
       adjustScroll()
       resizeParent()
