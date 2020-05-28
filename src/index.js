@@ -67,19 +67,27 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(`${analizer} Scroll=${totalCall.current}`)
+    // setAnalizer(`${analizer} Scroll=${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
       return
     }
     if (browserScrolling.current === 'stupid scrolling') {
+      setAnalizer(`stupid ${analizer}`)
+
       e.stopImmediatePropagation()
       e.stopPropagation()
       e.preventDefault()
       return
     }
     setPos()
+    setAnalizer(
+      `S=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+        2
+      )} ${analizer}`
+    )
+
     setPosState()
   }
 
@@ -88,6 +96,12 @@ export const AutoScrollContainer = ({
     currentFocus.current = e.target
     scroll.immediateChild = null
     setPos()
+    setAnalizer(
+      `F=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+        2
+      )} ${analizer}`
+    )
+
     addChildObserver()
     if (autoScrollOnFocus) {
       setBrowserScrolling('just focused')
@@ -145,7 +159,7 @@ export const AutoScrollContainer = ({
       setBrowserScrolling('stupid scrolling')
     }
     debounceResize().then(() => {
-      setAnalizer(`${analizer} dHit=${scroll.divSize.height}`)
+      setAnalizer(`dHit=${scroll.divSize.height} ${analizer}`)
 
       setBrowserScrolling('no')
       enableScroll()
@@ -158,7 +172,7 @@ export const AutoScrollContainer = ({
     scrollDiv.current.style.visibility = 'hidden'
     setPositionRelative()
     calcDivSize()
-    setAnalizer(`${analizer} iniHit=${scroll.divSize.height}`)
+    setAnalizer(`iniHit=${scroll.divSize.height} ${analizer}`)
 
     adjustScroll()
     scroll.initializing = false

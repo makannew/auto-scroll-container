@@ -26,6 +26,7 @@ code {
   width: 100px;
   height: 300px;
   overflow: scroll;
+  background: bisque;
   z-index: 3;
 }
 .app {
