@@ -39,7 +39,7 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
-  const [setBrowserScrollingLater] = useDelayedFunction(
+  const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
     keyboardPopDelay
   )
@@ -65,7 +65,7 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(`v2 ${browserScrolling.current} ${totalCall.current}`)
+    setAnalizer(`v3 ${browserScrolling.current} ${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
@@ -74,7 +74,6 @@ export const AutoScrollContainer = ({
     if (browserScrolling.current === 'stupid scrolling') {
       e.stopPropagation()
       e.preventDefault()
-      console.log('stupid scrolling')
       return
     }
     setPos()
@@ -90,15 +89,12 @@ export const AutoScrollContainer = ({
     if (autoScrollOnFocus) {
       setBrowserScrolling('just focused')
       setBrowserScrollingLater('no').then(() => {
-        if (browserScrolling.current !== 'stupid scrolling') {
-          scrollToNewPos()
-          setPosState()
-        }
+        scrollToNewPos()
+        setPosState()
       })
-      // scrollToNewPos()
-      return
+    } else {
+      setPosState()
     }
-    setPosState()
   }
 
   const handleBlure = (e) => {
@@ -140,9 +136,11 @@ export const AutoScrollContainer = ({
   function handleResize() {
     if (scroll.initializing || scroll.immediateChild) return
     if (browserScrolling.current === 'just focused') {
+      cancelBrowserScrolling()
       setBrowserScrolling('stupid scrolling')
     }
     debounceResize().then(() => {
+      setBrowserScrolling('no')
       adjustScroll()
       resizeParent()
     })
