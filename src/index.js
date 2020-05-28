@@ -357,11 +357,14 @@ export const AutoScrollContainer = ({
   }
 
   function calcDivSize() {
+    const rect = scrollDiv.current.getBoundingClientRect()
     scroll.divSize = {
-      width: scrollDiv.current.offsetWidth,
-      height: scrollDiv.current.offsetHeight
+      // width: scrollDiv.current.offsetWidth,
+      // height: scrollDiv.current.offsetHeight
       // width: scrollDiv.current.clientWidth,
       // height: scrollDiv.current.clientHeight
+      width: rect.width,
+      height: rect.height
     }
   }
 
