@@ -32,6 +32,7 @@ export const AutoScrollContainer = ({
   const currentFocus = useRef(null)
   const childObserver = useRef(null)
   const browserScrolling = useRef('no')
+  const scrollOverflow = useRef(null)
   const prevPos = useRef({
     x: scrollX,
     offsetX: viewX,
@@ -65,7 +66,7 @@ export const AutoScrollContainer = ({
 
   const handleScroll = (e) => {
     ++totalCall.current
-    setAnalizer(`v4 ${browserScrolling.current} ${totalCall.current}`)
+    setAnalizer(`v5 ${browserScrolling.current} ${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation()
       scroll.isAutoScrolling = false
@@ -89,7 +90,9 @@ export const AutoScrollContainer = ({
     addChildObserver()
     if (autoScrollOnFocus) {
       setBrowserScrolling('just focused')
+      disableScroll()
       setBrowserScrollingLater('no').then(() => {
+        enableScroll()
         scrollToNewPos()
         setPosState()
       })
@@ -142,6 +145,7 @@ export const AutoScrollContainer = ({
     }
     debounceResize().then(() => {
       setBrowserScrolling('no')
+      enableScroll()
       adjustScroll()
       resizeParent()
     })
@@ -384,6 +388,25 @@ export const AutoScrollContainer = ({
       width: scrollDiv.current.scrollWidth - left - right,
       height: scrollDiv.current.scrollHeight - top - bottom
     }
+  }
+
+  function disableScroll() {
+    const style = window.getComputedStyle(scrollDiv.current)
+    scrollOverflow.current = {
+      overflow: style.getPropertyValue('overflow'),
+      overflowX: style.getPropertyValue('overflow-x'),
+      overflowY: style.getPropertyValue('overflow-y')
+    }
+    scrollDiv.current.style.overflow = 'hidden'
+    scrollDiv.current.style.overflowX = 'hidden'
+    scrollDiv.current.style.overflowY = 'hidden'
+  }
+
+  function enableScroll() {
+    const style = scrollDiv.current.style
+    style.overflow = scrollOverflow.current.overflow
+    style.overflowX = scrollOverflow.current.overflowX
+    style.overflowY = scrollOverflow.current.overflowY
   }
 
   return (
