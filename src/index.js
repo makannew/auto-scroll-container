@@ -20,7 +20,7 @@ export const AutoScrollContainer = ({
   smoothScroll,
   viewMargin = 0.05,
   autoScrollOnFocus = true,
-  debouncingDelay = 200,
+  debouncingDelay = 2000,
   signature = 'data-auto-scroll-container-signature',
   setAnalizer
 }) => {
@@ -110,6 +110,14 @@ export const AutoScrollContainer = ({
     resizeParent()
   }
 
+  function handleResize() {
+    if (scroll.initializing || scroll.immediateChild) return
+    debounceResize().then(() => {
+      adjustScroll()
+      resizeParent()
+    })
+  }
+
   useLayoutEffect(() => {
     scrollDiv.current.style.visibility = 'hidden'
     setPositionRelative()
@@ -120,18 +128,11 @@ export const AutoScrollContainer = ({
   }, [])
 
   useEffect(() => {
-    const handleResize = () => {
-      if (scroll.initializing || scroll.immediateChild) return
-      debounceResize().then(() => {
-        adjustScroll()
-        resizeParent()
-      })
-    }
-    addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleResize)
     return () => {
-      removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  })
 
   useEffect(() => {
     if (scroll.initializing) return

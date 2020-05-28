@@ -40,6 +40,7 @@ const App = () => {
     setMarginBottom(0.5)
     setMarginLeft(0.5)
     setMarginRight(0.5)
+    console.log('reset called')
   }
 
   const handleChange = (e) => {
