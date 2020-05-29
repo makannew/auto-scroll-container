@@ -34,6 +34,7 @@ export const AutoScrollContainer = ({
   const childObserver = useRef(null)
   const browserScrolling = useRef('no')
   const scrollOverflow = useRef(null)
+  const focusing = useRef(false)
   const prevPos = useRef({
     x: scrollX,
     offsetX: viewX,
@@ -41,6 +42,7 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
+  const [resetFocusingLater] = useDelayedFunction(resetFocusing, 20)
   const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
     keyboardPopDelay
@@ -61,6 +63,10 @@ export const AutoScrollContainer = ({
     }
   }).current
 
+  function resetFocusing() {
+    focusing.current = false
+  }
+
   function setBrowserScrolling(status) {
     browserScrolling.current = status
   }
@@ -73,20 +79,29 @@ export const AutoScrollContainer = ({
       scroll.isAutoScrolling = false
       return
     }
-    if (
-      browserScrolling.current === 'stupid scrolling' ||
-      browserScrolling.current === 'just focused'
-    ) {
-      setAnalizer((analizer) => `stupid ${analizer}`)
+    // if (
+    //   browserScrolling.current === 'stupid scrolling' ||
+    //   browserScrolling.current === 'just focused'
+    // ) {
+    //   setAnalizer((analizer) => `stupid ${analizer}`)
+    //   setAnalizer(
+    //     (analizer) =>
+    //       `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+    //         2
+    //       )} ${analizer}`
+    //   )
+    //   e.stopImmediatePropagation() // ?
+    //   e.stopPropagation() // ?
+    //   e.preventDefault()
+    //   return
+    // }
+    if (focusing.current) {
       setAnalizer(
         (analizer) =>
           `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
             2
           )} ${analizer}`
       )
-      e.stopImmediatePropagation() // ?
-      e.stopPropagation() // ?
-      e.preventDefault()
       return
     }
     setPos()
@@ -101,6 +116,8 @@ export const AutoScrollContainer = ({
   }
 
   const handleFocus = (e) => {
+    focusing.current = true
+    resetFocusingLater()
     removeChildObserver()
     currentFocus.current = e.target
     scroll.immediateChild = null
@@ -375,19 +392,12 @@ export const AutoScrollContainer = ({
   function calcDivSize() {
     const rect = scrollDiv.current.getBoundingClientRect()
     scroll.divSize = {
-      // width: scrollDiv.current.offsetWidth,
-      // height: scrollDiv.current.offsetHeight
-      // width: scrollDiv.current.clientWidth,
-      // height: scrollDiv.current.clientHeight
-      // width: rect.width,
-      // height: rect.height
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight
+      width: rect.width,
+      // mobile browsers viewport hack
+      height: Math.min(rect.height, document.documentElement.clientHeight)
     }
     setAnalizer((analizer) => `rectH=${rect.height} ${analizer}`)
     setAnalizer((analizer) => `docH=${scroll.divSize.height} ${analizer}`)
-
-    console.log(rect.top)
   }
 
   function calcMargins() {
