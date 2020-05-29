@@ -21,7 +21,7 @@ export const AutoScrollContainer = ({
   viewMargin = 0.05,
   autoScrollOnFocus = true,
   debouncingDelay = 200,
-  keyboardPopDelay = 500,
+  keyboardPopDelay = 600,
   signature = 'data-auto-scroll-container-signature',
   setAnalizer,
   analizer
@@ -45,7 +45,7 @@ export const AutoScrollContainer = ({
   // const [resetFocusingLater] = useDelayedFunction(resetFocusing, 170)
   const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
-    1000
+    keyboardPopDelay
   )
 
   const scroll = useRef({
@@ -114,7 +114,7 @@ export const AutoScrollContainer = ({
   }
 
   const handleFocus = (e) => {
-    setAnalizer((analizer) => `focuseCalled ${analizer}`)
+    setAnalizer((analizer) => `f${Date.now()} ${analizer}`)
 
     // focusing.current = true
     // setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
@@ -193,7 +193,7 @@ export const AutoScrollContainer = ({
   }
 
   function handleResize() {
-    setAnalizer((analizer) => `resizeCalled ${analizer}`)
+    setAnalizer((analizer) => `r${Date.now()} ${analizer}`)
 
     if (scroll.initializing || scroll.immediateChild) return
 
@@ -201,14 +201,15 @@ export const AutoScrollContainer = ({
       setAnalizer((analizer) => `cancelIt ${analizer}`)
 
       cancelBrowserScrolling()
-      // setBrowserScrolling(false)
+      //setBrowserScrolling(false)
     } else {
       setBrowserScrolling(true)
-      setBrowserScrollingLater(false)
+      // setBrowserScrollingLater(false)
     }
 
     debounceResize().then(() => {
       setAnalizer((analizer) => `dHit1=${scroll.divSize.height} ${analizer}`)
+      setBrowserScrolling(false)
       // setBrowserScrolling(0)
       // enableScroll()
       adjustScroll()

@@ -27,6 +27,7 @@ code {
   height: 300px;
   overflow: scroll;
   background: bisque;
+  font-size: 0.7rem;
   z-index: 3;
 }
 .app {
