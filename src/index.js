@@ -26,7 +26,6 @@ export const AutoScrollContainer = ({
   setAnalizer,
   analizer
 }) => {
-  const totalCall = useRef(0)
   const scrollDiv = useRef()
   const contentDiv = useRef()
   const rightMarginDiv = useRef()
@@ -63,19 +62,12 @@ export const AutoScrollContainer = ({
     }
   }).current
 
-  // function resetFocusing() {
-  //   focusing.current = false
-  //   setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
-  // }
-
   function setBrowserScrolling(status) {
     browserScrolling.current = status
     setAnalizer((analizer) => `stus=${status} ${analizer}`)
   }
 
   const handleScroll = (e) => {
-    ++totalCall.current
-    // setAnalizer(`${analizer} Scroll=${totalCall.current}`)
     if (scroll.isAutoScrolling) {
       e.stopPropagation() // ?
       scroll.isAutoScrolling = false
@@ -90,15 +82,7 @@ export const AutoScrollContainer = ({
       e.preventDefault()
       return
     }
-    // if (focusing.current) {
-    //   setAnalizer(
-    //     (analizer) =>
-    //       `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-    //         2
-    //       )} ${analizer}`
-    //   )
-    //   return
-    // }
+
     setPos()
     setAnalizer(
       (analizer) =>
@@ -112,11 +96,6 @@ export const AutoScrollContainer = ({
 
   const handleFocus = (e) => {
     setAnalizer((analizer) => `f${Date.now()} ${analizer}`)
-
-    // focusing.current = true
-    // setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
-
-    // resetFocusingLater()
     removeChildObserver()
     currentFocus.current = e.target
     scroll.immediateChild = null
@@ -133,17 +112,10 @@ export const AutoScrollContainer = ({
     if (autoScrollOnFocus) {
       setBrowserScrolling(true)
       scrollToNewPos()
-
-      // disableScroll()
-      setBrowserScrollingLater(false).then(() => {
-        setAnalizer((analizer) => `not canceled ${analizer}`)
-
-        // enableScroll()
-        // scrollToNewPos()
-        setPosState()
-      })
-    } else {
       setPosState()
+      setBrowserScrollingLater(false).then(() => {
+        setAnalizer((analizer) => `c${Date.now()} ${analizer}`)
+      })
     }
   }
 
@@ -181,29 +153,23 @@ export const AutoScrollContainer = ({
 
   function resizeByChild() {
     if (scroll.initializing) return
-    // if (browserScrolling.current==="just focused"){
-    //   setBrowserScrolling("stupid scrolling")
-    // }
     calcDivSize()
+    setBrowserScrolling(false)
     adjustScroll()
     resizeParent()
   }
 
   function handleResize() {
+    if (scroll.initializing) return
     setAnalizer((analizer) => `r${Date.now()} ${analizer}`)
-
-    if (scroll.initializing || scroll.immediateChild) return
-
     if (browserScrolling.current) {
       setAnalizer((analizer) => `cancelIt ${analizer}`)
       cancelBrowserScrolling()
     }
-
+    if (scroll.immediateChild) return
     debounceResize().then(() => {
       setAnalizer((analizer) => `dHit1=${scroll.divSize.height} ${analizer}`)
       setBrowserScrolling(false)
-      // setBrowserScrolling(0)
-      // enableScroll()
       adjustScroll()
       resizeParent()
     })
@@ -213,8 +179,6 @@ export const AutoScrollContainer = ({
     scrollDiv.current.style.visibility = 'hidden'
     setPositionRelative()
     calcDivSize()
-    // setAnalizer((analizer) => `iniHit=${scroll.divSize.height} ${analizer}`)
-
     adjustScroll()
     scroll.initializing = false
     scrollDiv.current.style.visibility = 'visible'
