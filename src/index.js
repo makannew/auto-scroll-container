@@ -69,11 +69,14 @@ export const AutoScrollContainer = ({
     ++totalCall.current
     // setAnalizer(`${analizer} Scroll=${totalCall.current}`)
     if (scroll.isAutoScrolling) {
-      e.stopPropagation()
+      e.stopPropagation() // ?
       scroll.isAutoScrolling = false
       return
     }
-    if (browserScrolling.current === 'stupid scrolling') {
+    if (
+      browserScrolling.current === 'stupid scrolling' ||
+      browserScrolling.current === 'just focused'
+    ) {
       setAnalizer((analizer) => `stupid ${analizer}`)
       setAnalizer(
         (analizer) =>
@@ -81,8 +84,8 @@ export const AutoScrollContainer = ({
             2
           )} ${analizer}`
       )
-      e.stopImmediatePropagation()
-      e.stopPropagation()
+      e.stopImmediatePropagation() // ?
+      e.stopPropagation() // ?
       e.preventDefault()
       return
     }
@@ -376,10 +379,14 @@ export const AutoScrollContainer = ({
       // height: scrollDiv.current.offsetHeight
       // width: scrollDiv.current.clientWidth,
       // height: scrollDiv.current.clientHeight
-      width: rect.width,
-      height: rect.height
+      // width: rect.width,
+      // height: rect.height
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
     }
-    setAnalizer((analizer) => `rectTop=${rect.top} ${analizer}`)
+    setAnalizer((analizer) => `rectH=${rect.height} ${analizer}`)
+    setAnalizer((analizer) => `docH=${scroll.divSize.height} ${analizer}`)
+
     console.log(rect.top)
   }
 
