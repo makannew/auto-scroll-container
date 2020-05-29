@@ -70,7 +70,7 @@ export const AutoScrollContainer = ({
 
   function setBrowserScrolling(status) {
     browserScrolling.current = status
-    setAnalizer((analizer) => `status=${status} ${analizer}`)
+    setAnalizer((analizer) => `stus=${status} ${analizer}`)
   }
 
   const handleScroll = (e) => {
