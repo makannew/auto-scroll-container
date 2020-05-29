@@ -21,19 +21,16 @@ export const AutoScrollContainer = ({
   viewMargin = 0.05,
   autoScrollOnFocus = true,
   debouncingDelay = 200,
-  keyboardPopDelay = 600,
+  keyboardPopDelay = 1500,
   signature = 'data-auto-scroll-container-signature'
-  // setAnalizer,
-  // analizer
 }) => {
   const scrollDiv = useRef()
   const contentDiv = useRef()
   const rightMarginDiv = useRef()
   const currentFocus = useRef(null)
   const childObserver = useRef(null)
-  const browserScrolling = useRef(false)
-  const scrollOverflow = useRef(null)
-  // const focusing = useRef(false)
+  const mobileKeyboard = useRef(false)
+  const justFocused = useRef(false)
   const prevPos = useRef({
     x: scrollX,
     offsetX: viewX,
@@ -41,10 +38,14 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
-  const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
-    setBrowserScrolling,
+  const [setJustFocusedLater, cancelSetJustFocused] = useDelayedFunction(
+    setJustFocused,
     keyboardPopDelay
   )
+  // const [setMobileKeyboardLater, cancelSetMobileKeyboard] = useDelayedFunction(
+  //   setMobileKeyboard,
+  //   keyboardPopDelay
+  // )
 
   const scroll = useRef({
     initializing: true,
@@ -61,60 +62,43 @@ export const AutoScrollContainer = ({
     }
   }).current
 
-  function setBrowserScrolling(status) {
-    browserScrolling.current = status
-    // setAnalizer((analizer) => `stus=${status} ${analizer}`)
+  function setMobileKeyboard(status) {
+    mobileKeyboard.current = status
+  }
+
+  function setJustFocused(status) {
+    justFocused.current = status
   }
 
   const handleScroll = (e) => {
     if (scroll.isAutoScrolling) {
-      // e.stopPropagation() // ?
+      e.stopPropagation()
       scroll.isAutoScrolling = false
       return
     }
-    if (browserScrolling.current) {
+    if (mobileKeyboard.current) {
       scrollToNewPos()
-
-      // setAnalizer((analizer) => `tp=${Date.now()} ${analizer}`)
-      // e.stopImmediatePropagation() // ?
-      // e.stopPropagation() // ?
+      e.stopPropagation()
       e.preventDefault()
       return
     }
-
     setPos()
-    // setAnalizer(
-    //   (analizer) =>
-    //     `S=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-    //       2
-    //     )} ${analizer}`
-    // )
-
     setPosState()
   }
 
   const handleFocus = (e) => {
-    // setAnalizer((analizer) => `f${Date.now()} ${analizer}`)
     removeChildObserver()
     currentFocus.current = e.target
     scroll.immediateChild = null
     setPos()
-    // setAnalizer(
-    //   (analizer) =>
-    //     `F=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-    //       2
-    //     )} ${analizer}`
-    // )
-
     addChildObserver()
-
     if (autoScrollOnFocus) {
-      setBrowserScrolling(true)
+      // setMobileKeyboard("maybe")
+      setJustFocused(true)
       scrollToNewPos()
       setPosState()
-      setBrowserScrollingLater(false).then(() => {
-        // setAnalizer((analizer) => `c${Date.now()} ${analizer}`)
-      })
+      setJustFocusedLater(false)
+      // setMobileKeyboardLater("no")
     }
   }
 
@@ -122,12 +106,6 @@ export const AutoScrollContainer = ({
     removeChildObserver()
     currentFocus.current = null
     setPos()
-    // setAnalizer(
-    //   (analizer) =>
-    //     `B=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-    //       2
-    //     )} ${analizer}`
-    // )
     setPosState()
   }
 
@@ -153,22 +131,20 @@ export const AutoScrollContainer = ({
   function resizeByChild() {
     if (scroll.initializing) return
     calcDivSize()
-    setBrowserScrolling(false)
+    setMobileKeyboard(false)
     adjustScroll()
     resizeParent()
   }
 
   function handleResize() {
     if (scroll.initializing) return
-    // setAnalizer((analizer) => `r${Date.now()} ${analizer}`)
-    if (browserScrolling.current) {
-      // setAnalizer((analizer) => `cancelIt ${analizer}`)
-      cancelBrowserScrolling()
+    if (justFocused.current) {
+      setMobileKeyboard(true)
+      // cancelSetJustFocused()
     }
     if (scroll.immediateChild) return
     debounceResize().then(() => {
-      // setAnalizer((analizer) => `dHit1=${scroll.divSize.height} ${analizer}`)
-      setBrowserScrolling(false)
+      setMobileKeyboard(false)
       adjustScroll()
       resizeParent()
     })
@@ -412,26 +388,6 @@ export const AutoScrollContainer = ({
       height: scrollDiv.current.scrollHeight - top - bottom
     }
   }
-
-  // function disableScroll() {
-  //   const style = window.getComputedStyle(scrollDiv.current)
-  //   scrollOverflow.current = {
-  //     overflow: style.getPropertyValue('overflow'),
-  //     overflowX: style.getPropertyValue('overflow-x'),
-  //     overflowY: style.getPropertyValue('overflow-y')
-  //   }
-  //   scrollDiv.current.style.overflow = 'hidden'
-  //   scrollDiv.current.style.overflowX = 'hidden'
-  //   scrollDiv.current.style.overflowY = 'hidden'
-  // }
-
-  // function enableScroll() {
-  //   if (!scrollOverflow.current) return
-  //   const style = scrollDiv.current.style
-  //   style.overflow = scrollOverflow.current.overflow
-  //   style.overflowX = scrollOverflow.current.overflowX
-  //   style.overflowY = scrollOverflow.current.overflowY
-  // }
 
   return (
     <div
