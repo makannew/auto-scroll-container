@@ -82,12 +82,9 @@ export const AutoScrollContainer = ({
       return
     }
     if (browserScrolling.current) {
-      setAnalizer(
-        (analizer) =>
-          `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-            2
-          )} ${analizer}`
-      )
+      scrollToNewPos()
+
+      setAnalizer((analizer) => `tp=${Date.now()} ${analizer}`)
       e.stopImmediatePropagation() // ?
       e.stopPropagation() // ?
       e.preventDefault()
@@ -134,17 +131,17 @@ export const AutoScrollContainer = ({
     addChildObserver()
 
     if (autoScrollOnFocus) {
-      if (!browserScrolling.current) {
-        setBrowserScrolling(true)
-        // disableScroll()
-        setBrowserScrollingLater(false).then(() => {
-          setAnalizer((analizer) => `not canceled ${analizer}`)
+      setBrowserScrolling(true)
+      scrollToNewPos()
 
-          // enableScroll()
-          scrollToNewPos()
-          setPosState()
-        })
-      }
+      // disableScroll()
+      setBrowserScrollingLater(false).then(() => {
+        setAnalizer((analizer) => `not canceled ${analizer}`)
+
+        // enableScroll()
+        // scrollToNewPos()
+        setPosState()
+      })
     } else {
       setPosState()
     }
@@ -199,12 +196,7 @@ export const AutoScrollContainer = ({
 
     if (browserScrolling.current) {
       setAnalizer((analizer) => `cancelIt ${analizer}`)
-
       cancelBrowserScrolling()
-      //setBrowserScrolling(false)
-    } else {
-      setBrowserScrolling(true)
-      // setBrowserScrollingLater(false)
     }
 
     debounceResize().then(() => {
