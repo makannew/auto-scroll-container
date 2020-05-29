@@ -21,7 +21,7 @@ export const AutoScrollContainer = ({
   viewMargin = 0.05,
   autoScrollOnFocus = true,
   debouncingDelay = 200,
-  keyboardPopDelay = 100,
+  keyboardPopDelay = 500,
   signature = 'data-auto-scroll-container-signature',
   setAnalizer,
   analizer
