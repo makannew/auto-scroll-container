@@ -45,7 +45,7 @@ export const AutoScrollContainer = ({
   // const [resetFocusingLater] = useDelayedFunction(resetFocusing, 170)
   const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
-    keyboardPopDelay
+    1000
   )
 
   const scroll = useRef({
@@ -208,7 +208,7 @@ export const AutoScrollContainer = ({
     }
 
     debounceResize().then(() => {
-      setAnalizer((analizer) => `dHit=${scroll.divSize.height} ${analizer}`)
+      setAnalizer((analizer) => `dHit1=${scroll.divSize.height} ${analizer}`)
       // setBrowserScrolling(0)
       // enableScroll()
       adjustScroll()
