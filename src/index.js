@@ -42,7 +42,7 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
-  const [resetFocusingLater] = useDelayedFunction(resetFocusing, 20)
+  const [resetFocusingLater] = useDelayedFunction(resetFocusing, 170)
   const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
     keyboardPopDelay
@@ -65,6 +65,7 @@ export const AutoScrollContainer = ({
 
   function resetFocusing() {
     focusing.current = false
+    setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
   }
 
   function setBrowserScrolling(status) {
@@ -117,6 +118,8 @@ export const AutoScrollContainer = ({
 
   const handleFocus = (e) => {
     focusing.current = true
+    setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
+
     resetFocusingLater()
     removeChildObserver()
     currentFocus.current = e.target
