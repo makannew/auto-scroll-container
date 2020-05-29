@@ -21,7 +21,7 @@ export const AutoScrollContainer = ({
   viewMargin = 0.05,
   autoScrollOnFocus = true,
   debouncingDelay = 200,
-  keyboardPopDelay = 200,
+  keyboardPopDelay = 100,
   signature = 'data-auto-scroll-container-signature',
   setAnalizer,
   analizer
@@ -34,7 +34,7 @@ export const AutoScrollContainer = ({
   const childObserver = useRef(null)
   const browserScrolling = useRef('no')
   const scrollOverflow = useRef(null)
-  const focusing = useRef(false)
+  // const focusing = useRef(false)
   const prevPos = useRef({
     x: scrollX,
     offsetX: viewX,
@@ -42,7 +42,7 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
-  const [resetFocusingLater] = useDelayedFunction(resetFocusing, 170)
+  // const [resetFocusingLater] = useDelayedFunction(resetFocusing, 170)
   const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
     keyboardPopDelay
@@ -63,13 +63,14 @@ export const AutoScrollContainer = ({
     }
   }).current
 
-  function resetFocusing() {
-    focusing.current = false
-    setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
-  }
+  // function resetFocusing() {
+  //   focusing.current = false
+  //   setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
+  // }
 
   function setBrowserScrolling(status) {
     browserScrolling.current = status
+    setAnalizer((analizer) => `${status} ${analizer}`)
   }
 
   const handleScroll = (e) => {
@@ -80,31 +81,31 @@ export const AutoScrollContainer = ({
       scroll.isAutoScrolling = false
       return
     }
-    // if (
-    //   browserScrolling.current === 'stupid scrolling' ||
-    //   browserScrolling.current === 'just focused'
-    // ) {
-    //   setAnalizer((analizer) => `stupid ${analizer}`)
-    //   setAnalizer(
-    //     (analizer) =>
-    //       `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-    //         2
-    //       )} ${analizer}`
-    //   )
-    //   e.stopImmediatePropagation() // ?
-    //   e.stopPropagation() // ?
-    //   e.preventDefault()
-    //   return
-    // }
-    if (focusing.current) {
+    if (
+      browserScrolling.current === 'stupid scrolling' ||
+      browserScrolling.current === 'just focused'
+    ) {
+      setAnalizer((analizer) => `stupid ${analizer}`)
       setAnalizer(
         (analizer) =>
           `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
             2
           )} ${analizer}`
       )
+      e.stopImmediatePropagation() // ?
+      e.stopPropagation() // ?
+      e.preventDefault()
       return
     }
+    // if (focusing.current) {
+    //   setAnalizer(
+    //     (analizer) =>
+    //       `tp=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+    //         2
+    //       )} ${analizer}`
+    //   )
+    //   return
+    // }
     setPos()
     setAnalizer(
       (analizer) =>
@@ -117,10 +118,10 @@ export const AutoScrollContainer = ({
   }
 
   const handleFocus = (e) => {
-    focusing.current = true
-    setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
+    // focusing.current = true
+    // setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
 
-    resetFocusingLater()
+    // resetFocusingLater()
     removeChildObserver()
     currentFocus.current = e.target
     scroll.immediateChild = null
@@ -137,6 +138,8 @@ export const AutoScrollContainer = ({
       setBrowserScrolling('just focused')
       disableScroll()
       setBrowserScrollingLater('no').then(() => {
+        setAnalizer((analizer) => `not canceled ${analizer}`)
+
         enableScroll()
         scrollToNewPos()
         setPosState()
