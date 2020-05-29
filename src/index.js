@@ -22,9 +22,9 @@ export const AutoScrollContainer = ({
   autoScrollOnFocus = true,
   debouncingDelay = 200,
   keyboardPopDelay = 600,
-  signature = 'data-auto-scroll-container-signature',
-  setAnalizer,
-  analizer
+  signature = 'data-auto-scroll-container-signature'
+  // setAnalizer,
+  // analizer
 }) => {
   const scrollDiv = useRef()
   const contentDiv = useRef()
@@ -41,7 +41,6 @@ export const AutoScrollContainer = ({
     offsetY: viewY
   })
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
-  // const [resetFocusingLater] = useDelayedFunction(resetFocusing, 170)
   const [setBrowserScrollingLater, cancelBrowserScrolling] = useDelayedFunction(
     setBrowserScrolling,
     keyboardPopDelay
@@ -64,48 +63,48 @@ export const AutoScrollContainer = ({
 
   function setBrowserScrolling(status) {
     browserScrolling.current = status
-    setAnalizer((analizer) => `stus=${status} ${analizer}`)
+    // setAnalizer((analizer) => `stus=${status} ${analizer}`)
   }
 
   const handleScroll = (e) => {
     if (scroll.isAutoScrolling) {
-      e.stopPropagation() // ?
+      // e.stopPropagation() // ?
       scroll.isAutoScrolling = false
       return
     }
     if (browserScrolling.current) {
       scrollToNewPos()
 
-      setAnalizer((analizer) => `tp=${Date.now()} ${analizer}`)
-      e.stopImmediatePropagation() // ?
-      e.stopPropagation() // ?
+      // setAnalizer((analizer) => `tp=${Date.now()} ${analizer}`)
+      // e.stopImmediatePropagation() // ?
+      // e.stopPropagation() // ?
       e.preventDefault()
       return
     }
 
     setPos()
-    setAnalizer(
-      (analizer) =>
-        `S=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-          2
-        )} ${analizer}`
-    )
+    // setAnalizer(
+    //   (analizer) =>
+    //     `S=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+    //       2
+    //     )} ${analizer}`
+    // )
 
     setPosState()
   }
 
   const handleFocus = (e) => {
-    setAnalizer((analizer) => `f${Date.now()} ${analizer}`)
+    // setAnalizer((analizer) => `f${Date.now()} ${analizer}`)
     removeChildObserver()
     currentFocus.current = e.target
     scroll.immediateChild = null
     setPos()
-    setAnalizer(
-      (analizer) =>
-        `F=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-          2
-        )} ${analizer}`
-    )
+    // setAnalizer(
+    //   (analizer) =>
+    //     `F=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+    //       2
+    //     )} ${analizer}`
+    // )
 
     addChildObserver()
 
@@ -114,7 +113,7 @@ export const AutoScrollContainer = ({
       scrollToNewPos()
       setPosState()
       setBrowserScrollingLater(false).then(() => {
-        setAnalizer((analizer) => `c${Date.now()} ${analizer}`)
+        // setAnalizer((analizer) => `c${Date.now()} ${analizer}`)
       })
     }
   }
@@ -123,12 +122,12 @@ export const AutoScrollContainer = ({
     removeChildObserver()
     currentFocus.current = null
     setPos()
-    setAnalizer(
-      (analizer) =>
-        `B=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
-          2
-        )} ${analizer}`
-    )
+    // setAnalizer(
+    //   (analizer) =>
+    //     `B=${scroll.pos.y.toFixed(2)}, ${scroll.pos.offsetY.toFixed(
+    //       2
+    //     )} ${analizer}`
+    // )
     setPosState()
   }
 
@@ -161,14 +160,14 @@ export const AutoScrollContainer = ({
 
   function handleResize() {
     if (scroll.initializing) return
-    setAnalizer((analizer) => `r${Date.now()} ${analizer}`)
+    // setAnalizer((analizer) => `r${Date.now()} ${analizer}`)
     if (browserScrolling.current) {
-      setAnalizer((analizer) => `cancelIt ${analizer}`)
+      // setAnalizer((analizer) => `cancelIt ${analizer}`)
       cancelBrowserScrolling()
     }
     if (scroll.immediateChild) return
     debounceResize().then(() => {
-      setAnalizer((analizer) => `dHit1=${scroll.divSize.height} ${analizer}`)
+      // setAnalizer((analizer) => `dHit1=${scroll.divSize.height} ${analizer}`)
       setBrowserScrolling(false)
       adjustScroll()
       resizeParent()
@@ -368,8 +367,6 @@ export const AutoScrollContainer = ({
       // mobile browsers viewport hack
       height: Math.min(rect.height, document.documentElement.clientHeight)
     }
-    // setAnalizer((analizer) => `rectH=${rect.height} ${analizer}`)
-    // setAnalizer((analizer) => `docH=${scroll.divSize.height} ${analizer}`)
   }
 
   function calcMargins() {
@@ -416,25 +413,25 @@ export const AutoScrollContainer = ({
     }
   }
 
-  function disableScroll() {
-    const style = window.getComputedStyle(scrollDiv.current)
-    scrollOverflow.current = {
-      overflow: style.getPropertyValue('overflow'),
-      overflowX: style.getPropertyValue('overflow-x'),
-      overflowY: style.getPropertyValue('overflow-y')
-    }
-    scrollDiv.current.style.overflow = 'hidden'
-    scrollDiv.current.style.overflowX = 'hidden'
-    scrollDiv.current.style.overflowY = 'hidden'
-  }
+  // function disableScroll() {
+  //   const style = window.getComputedStyle(scrollDiv.current)
+  //   scrollOverflow.current = {
+  //     overflow: style.getPropertyValue('overflow'),
+  //     overflowX: style.getPropertyValue('overflow-x'),
+  //     overflowY: style.getPropertyValue('overflow-y')
+  //   }
+  //   scrollDiv.current.style.overflow = 'hidden'
+  //   scrollDiv.current.style.overflowX = 'hidden'
+  //   scrollDiv.current.style.overflowY = 'hidden'
+  // }
 
-  function enableScroll() {
-    if (!scrollOverflow.current) return
-    const style = scrollDiv.current.style
-    style.overflow = scrollOverflow.current.overflow
-    style.overflowX = scrollOverflow.current.overflowX
-    style.overflowY = scrollOverflow.current.overflowY
-  }
+  // function enableScroll() {
+  //   if (!scrollOverflow.current) return
+  //   const style = scrollDiv.current.style
+  //   style.overflow = scrollOverflow.current.overflow
+  //   style.overflowX = scrollOverflow.current.overflowX
+  //   style.overflowY = scrollOverflow.current.overflowY
+  // }
 
   return (
     <div

@@ -122,7 +122,7 @@ const App = () => {
         >
           Menu
         </h3>
-        <p id='temp'>{analizer}</p>
+        {/* <p id='temp'>{analizer}</p> */}
         <div className='containers'>
           <button
             onClick={() => {
