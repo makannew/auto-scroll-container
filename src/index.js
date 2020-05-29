@@ -32,7 +32,7 @@ export const AutoScrollContainer = ({
   const rightMarginDiv = useRef()
   const currentFocus = useRef(null)
   const childObserver = useRef(null)
-  const browserScrolling = useRef('no')
+  const browserScrolling = useRef(false)
   const scrollOverflow = useRef(null)
   // const focusing = useRef(false)
   const prevPos = useRef({
@@ -70,7 +70,7 @@ export const AutoScrollContainer = ({
 
   function setBrowserScrolling(status) {
     browserScrolling.current = status
-    setAnalizer((analizer) => `${status} ${analizer}`)
+    setAnalizer((analizer) => `status=${status} ${analizer}`)
   }
 
   const handleScroll = (e) => {
@@ -81,10 +81,7 @@ export const AutoScrollContainer = ({
       scroll.isAutoScrolling = false
       return
     }
-    if (
-      browserScrolling.current === 'stupid scrolling' ||
-      browserScrolling.current === 'just focused'
-    ) {
+    if (browserScrolling.current) {
       setAnalizer((analizer) => `stupid ${analizer}`)
       setAnalizer(
         (analizer) =>
@@ -134,10 +131,11 @@ export const AutoScrollContainer = ({
     )
 
     addChildObserver()
-    if (autoScrollOnFocus) {
-      setBrowserScrolling('just focused')
+
+    if (autoScrollOnFocus && !browserScrolling.current) {
+      setBrowserScrolling(true)
       disableScroll()
-      setBrowserScrollingLater('no').then(() => {
+      setBrowserScrollingLater(false).then(() => {
         setAnalizer((analizer) => `not canceled ${analizer}`)
 
         enableScroll()
@@ -193,14 +191,18 @@ export const AutoScrollContainer = ({
 
   function handleResize() {
     if (scroll.initializing || scroll.immediateChild) return
-    if (browserScrolling.current === 'just focused') {
+
+    if (browserScrolling.current) {
       cancelBrowserScrolling()
-      setBrowserScrolling('stupid scrolling')
+      // setBrowserScrolling(false)
+    } else {
+      setBrowserScrolling(true)
+      setBrowserScrollingLater(false)
     }
+
     debounceResize().then(() => {
       setAnalizer((analizer) => `dHit=${scroll.divSize.height} ${analizer}`)
-
-      setBrowserScrolling('no')
+      // setBrowserScrolling(0)
       enableScroll()
       adjustScroll()
       resizeParent()
