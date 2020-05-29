@@ -114,6 +114,8 @@ export const AutoScrollContainer = ({
   }
 
   const handleFocus = (e) => {
+    setAnalizer((analizer) => `focuseCalled ${analizer}`)
+
     // focusing.current = true
     // setAnalizer((analizer) => `Focus=${focusing.current} ${analizer}`)
 
@@ -191,6 +193,8 @@ export const AutoScrollContainer = ({
   }
 
   function handleResize() {
+    setAnalizer((analizer) => `resizeCalled ${analizer}`)
+
     if (scroll.initializing || scroll.immediateChild) return
 
     if (browserScrolling.current) {
