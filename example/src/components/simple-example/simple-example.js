@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../simple-example/simple-example.module.css'
 

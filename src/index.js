@@ -9,14 +9,8 @@ export const AutoScrollContainer = ({
   marginBottom = 0.5,
   marginLeft = 0,
   marginRight = 0,
-  scrollX = 0, // fraction of total content size
-  scrollY = 0,
-  viewX = 0.1,
-  viewY = 0.1,
-  setScrollX,
-  setScrollY,
-  setViewX,
-  setViewY,
+  scrollPos,
+  setScrollPos,
   smoothScroll,
   viewMargin = 0.05,
   autoScrollOnFocus = true,
@@ -31,21 +25,12 @@ export const AutoScrollContainer = ({
   const childObserver = useRef(null)
   const mobileKeyboard = useRef(false)
   const justFocused = useRef(false)
-  const prevPos = useRef({
-    x: scrollX,
-    offsetX: viewX,
-    y: scrollY,
-    offsetY: viewY
-  })
+
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
   const [setJustFocusedLater, cancelSetJustFocused] = useDelayedFunction(
     setJustFocused,
     keyboardPopDelay
   )
-  // const [setMobileKeyboardLater, cancelSetMobileKeyboard] = useDelayedFunction(
-  //   setMobileKeyboard,
-  //   keyboardPopDelay
-  // )
 
   const scroll = useRef({
     initializing: true,
@@ -55,10 +40,10 @@ export const AutoScrollContainer = ({
     margins: undefined,
     content: undefined,
     pos: {
-      x: scrollX,
-      offsetX: viewX,
-      y: scrollY,
-      offsetY: viewY
+      x: scrollPos.scrollX,
+      offsetX: scrollPos.viewX,
+      y: scrollPos.scrollY,
+      offsetY: scrollPos.viewY
     }
   }).current
 
@@ -82,7 +67,7 @@ export const AutoScrollContainer = ({
       e.preventDefault()
       return
     }
-    setPos()
+    scroll.pos = currentPos()
     setPosState()
   }
 
@@ -90,7 +75,7 @@ export const AutoScrollContainer = ({
     removeChildObserver()
     currentFocus.current = e.target
     scroll.immediateChild = null
-    setPos()
+    scroll.pos = currentPos()
     addChildObserver()
     if (autoScrollOnFocus) {
       // setMobileKeyboard("maybe")
@@ -105,7 +90,7 @@ export const AutoScrollContainer = ({
   const handleBlure = (e) => {
     removeChildObserver()
     currentFocus.current = null
-    setPos()
+    scroll.pos = currentPos()
     setPosState()
   }
 
@@ -168,32 +153,19 @@ export const AutoScrollContainer = ({
 
   useEffect(() => {
     if (scroll.initializing) return
-    const {
-      pos: { x, y, offsetX, offsetY }
-    } = scroll
-    const { prevSX, prevSY, prevVX, prevVY } = prevPos.current
-    if (
-      (setScrollX && scrollX != x) ||
-      (setScrollY && scrollY != y) ||
-      (setViewX && viewX != offsetX) ||
-      (setViewY && viewY != offsetY) ||
-      (!setScrollX && scrollX != prevSX) ||
-      (!setScrollY && scrollY != prevSY) ||
-      (!setViewX && viewX != prevVX) ||
-      (!setViewY && viewY != prevVY)
-    ) {
-      userPos()
-      scrollToNewPos()
+    if (scrollPos.autoScroll) {
+      scrollPos.autoScroll = false
+      return
     }
-    return () => {
-      prevPos.current = {
-        prevSX: scrollX,
-        prevSY: scrollY,
-        prevVX: viewX,
-        prevVY: viewY
-      }
+    const { scrollX, viewX, scrollY, viewY } = scrollPos
+    scroll.pos = {
+      x: scrollX,
+      offsetX: viewX,
+      y: scrollY,
+      offsetY: viewY
     }
-  }, [scrollX, scrollY, viewX, viewY])
+    scrollToNewPos()
+  }, [scrollPos])
 
   useEffect(() => {
     if (scroll.initializing) return
@@ -277,39 +249,38 @@ export const AutoScrollContainer = ({
     setMargins()
     calcContent()
     scrollToNewPos()
-    setPos()
+    scroll.pos = currentPos()
     setPosState()
   }
 
-  function setPos() {
+  function currentPos() {
     const { divSize, content, margins, pos } = scroll
+    const { viewX, viewY } = scrollPos
     const top = scrollDiv.current.scrollTop
     const left = scrollDiv.current.scrollLeft
     const [x, y] = currentFocus.current
       ? relativeOffset(currentFocus.current)
       : [left + viewX * divSize.width, top + viewY * divSize.height]
-    pos.x = (x - margins.left) / content.width
-    pos.y = (y - margins.top) / content.height
-    pos.offsetX = (x - left) / divSize.width
-    pos.offsetY = (y - top) / divSize.height
+    return {
+      x: (x - margins.left) / content.width,
+      y: (y - margins.top) / content.height,
+      offsetX: (x - left) / divSize.width,
+      offsetY: (y - top) / divSize.height
+    }
   }
 
   function setPosState() {
+    if (!setScrollPos) return
     const {
       pos: { x, y, offsetX, offsetY }
     } = scroll
-    if (setScrollY) {
-      setScrollY(y)
-    }
-    if (setScrollX) {
-      setScrollX(x)
-    }
-    if (setViewY) {
-      setViewY(offsetY)
-    }
-    if (setViewX) {
-      setViewX(offsetX)
-    }
+    setScrollPos(() => ({
+      scrollX: x,
+      viewX: offsetX,
+      scrollY: y,
+      viewY: offsetY,
+      autoScroll: true
+    }))
   }
 
   function scrollToNewPos() {
@@ -322,14 +293,6 @@ export const AutoScrollContainer = ({
       pos.x * content.width - offsetX * divSize.width + margins.left
   }
 
-  function userPos() {
-    scroll.pos = {
-      x: scrollX,
-      offsetX: viewX,
-      y: scrollY,
-      offsetY: viewY
-    }
-  }
   function setPositionRelative() {
     if (getComputedStyle(scrollDiv.current).position === 'static') {
       scrollDiv.current.style.position = 'relative'
