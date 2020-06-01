@@ -16,6 +16,7 @@ const App = () => {
   const [example, setExample] = useState(1)
   const [menuState, setMenuState] = useState(true)
   const [activeMode, setActiveMode] = useState(true)
+  const [autoScrollOnFocus, setAutoScrollOnFocus] = useState(true)
   const [scrollPos, setScrollPos] = useState(() => ({
     scrollX: 0,
     viewX: 0.1,
@@ -26,8 +27,11 @@ const App = () => {
   const [marginBottom, setMarginBottom] = useState(0.5)
   const [marginLeft, setMarginLeft] = useState(0.5)
   const [marginRight, setMarginRight] = useState(0.5)
-  const [nestedScrollY, setNestedScrollY] = useState(0)
-  const [nestedViewY, setNestedViewY] = useState(0.1)
+  const [nestedScrollPos, setNestedScrollPos] = useState({
+    scrollY: 0,
+    viewY: 0.1
+  })
+  // const [nestedViewY, setNestedViewY] = useState(0.1)
   const [nestedMarginTop, setNestedMarginTop] = useState(0.5)
   const [nestedMarginBottom, setNestedMarginBottom] = useState(0.5)
 
@@ -67,10 +71,16 @@ const App = () => {
         setMarginRight(value)
         break
       case 'nestedScrollY':
-        setNestedScrollY(value)
+        setNestedScrollPos((nestedScrollPos) => ({
+          ...nestedScrollPos,
+          scrollY: value
+        }))
         break
       case 'nestedViewY':
-        setNestedViewY(value)
+        setNestedScrollPos((nestedScrollPos) => ({
+          ...nestedScrollPos,
+          viewY: value
+        }))
         break
       case 'nestedMarginTop':
         setNestedMarginTop(value)
@@ -83,24 +93,19 @@ const App = () => {
     }
   }
   const passivePara = {
-    // scrollY,
-    // viewY,
-    // scrollX,
-    // viewX,
+    autoScrollOnFocus,
     scrollPos,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    nestedScrollY,
-    nestedViewY,
+    nestedScrollPos,
     nestedMarginTop,
     nestedMarginBottom
   }
   const activePara = {
     setScrollPos,
-    setNestedScrollY,
-    setNestedViewY
+    setNestedScrollPos
   }
   const para = activeMode
     ? { ...passivePara, ...activePara }
@@ -157,6 +162,20 @@ const App = () => {
               checked={activeMode}
               onChange={(e) => {
                 setActiveMode(e.target.checked)
+              }}
+            />
+          </div>
+
+          <div>
+            <label htmlFor='autofocus'>Auto scroll on focus</label>
+            <input
+              type='checkbox'
+              id='autofocus'
+              name='autofocus'
+              value='autofocus'
+              checked={autoScrollOnFocus}
+              onChange={(e) => {
+                setAutoScrollOnFocus(e.target.checked)
               }}
             />
           </div>
@@ -288,7 +307,7 @@ const App = () => {
                   <h3>Nested Scroll</h3>
 
                   <label htmlFor='nestedScrollY'>{`scrollY = ${Number(
-                    nestedScrollY
+                    nestedScrollPos.scrollY
                   ).toFixed(3)}`}</label>
                   <input
                     id='nestedScrollY'
@@ -296,13 +315,13 @@ const App = () => {
                     min='0'
                     max='1'
                     step='0.05'
-                    value={nestedScrollY}
+                    value={nestedScrollPos.scrollY}
                     name='nestedScrollY'
                     onChange={handleChange}
                   />
 
                   <label htmlFor='nestedViewY'>{`viewY = ${Number(
-                    nestedViewY
+                    nestedScrollPos.viewY
                   ).toFixed(3)}`}</label>
                   <input
                     id='nestedViewY'
@@ -310,7 +329,7 @@ const App = () => {
                     min='0'
                     max='1'
                     step='0.05'
-                    value={nestedViewY}
+                    value={nestedScrollPos.viewY}
                     name='nestedViewY'
                     onChange={handleChange}
                   />

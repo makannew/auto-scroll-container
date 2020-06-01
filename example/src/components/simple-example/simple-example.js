@@ -1,12 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../simple-example/simple-example.module.css'
 
 export default function SimpleExample({ className, contentClass, ...rest }) {
+  const [focus, setFocus] = useState()
+  useEffect(() => {
+    const prevPlaceholder = focus?.element?.placeholder
+    if (focus?.element) {
+      focus.element.placeholder = 'Focused element!'
+    }
+    return () => {
+      if (focus?.element) {
+        focus.element.placeholder = prevPlaceholder
+      }
+    }
+  }, [focus])
+
   return (
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
+      focus={focus}
+      setFocus={setFocus}
       {...rest}
     >
       <p className='description'>

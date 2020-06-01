@@ -11,6 +11,8 @@ export const AutoScrollContainer = ({
   marginRight = 0,
   scrollPos,
   setScrollPos,
+  focus,
+  setFocus,
   smoothScroll,
   viewMargin = 0.05,
   autoScrollOnFocus = true,
@@ -27,7 +29,7 @@ export const AutoScrollContainer = ({
   const justFocused = useRef(false)
 
   const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
-  const [setJustFocusedLater, cancelSetJustFocused] = useDelayedFunction(
+  const [setJustFocusedLater] = useDelayedFunction(
     setJustFocused,
     keyboardPopDelay
   )
@@ -74,22 +76,26 @@ export const AutoScrollContainer = ({
   const handleFocus = (e) => {
     removeChildObserver()
     currentFocus.current = e.target
+    if (setFocus) {
+      setFocus(() => ({ element: currentFocus.current }))
+    }
     scroll.immediateChild = null
     scroll.pos = currentPos()
     addChildObserver()
     if (autoScrollOnFocus) {
-      // setMobileKeyboard("maybe")
       setJustFocused(true)
       scrollToNewPos()
       setPosState()
       setJustFocusedLater(false)
-      // setMobileKeyboardLater("no")
     }
   }
 
   const handleBlure = (e) => {
     removeChildObserver()
     currentFocus.current = null
+    if (setFocus) {
+      setFocus(() => ({ element: null }))
+    }
     scroll.pos = currentPos()
     setPosState()
   }
@@ -125,7 +131,6 @@ export const AutoScrollContainer = ({
     if (scroll.initializing) return
     if (justFocused.current) {
       setMobileKeyboard(true)
-      // cancelSetJustFocused()
     }
     if (scroll.immediateChild) return
     debounceResize().then(() => {
@@ -171,6 +176,12 @@ export const AutoScrollContainer = ({
     if (scroll.initializing) return
     adjustScroll()
   }, [marginTop, marginBottom, marginLeft, marginRight, viewMargin])
+
+  useEffect(() => {
+    if (!focus || !focus.element || currentFocus.current === focus.element)
+      return
+    focus.element.focus()
+  }, [focus])
 
   useEffect(() => {
     scrollDiv.current.setAttribute(signature, '0')

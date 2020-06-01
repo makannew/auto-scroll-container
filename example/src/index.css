@@ -149,6 +149,10 @@ form > input[name='Submit'] {
   margin: 5px 7px 14px 7px;
 }
 
+#autofocus {
+  margin: 5px 7px 20px 7px;
+}
+
 .containers input {
   margin-bottom: 7px;
 }

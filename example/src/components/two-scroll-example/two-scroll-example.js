@@ -4,10 +4,8 @@ import styles from '../two-scroll-example/two-scroll-example.module.css'
 
 export default function TwoScrollExample({ className, contentClass, ...rest }) {
   const {
-    nestedScrollY,
-    nestedViewY,
-    setNestedScrollY,
-    setNestedViewY,
+    nestedScrollPos,
+    setNestedScrollPos,
     nestedMarginTop,
     nestedMarginBottom
   } = rest
@@ -30,10 +28,8 @@ export default function TwoScrollExample({ className, contentClass, ...rest }) {
       <AutoScrollContainer
         className={styles['second-scroll']}
         contentClass={styles['second-scroll-content']}
-        scrollY={nestedScrollY}
-        viewY={nestedViewY}
-        setScrollY={setNestedScrollY}
-        setViewY={setNestedViewY}
+        scrollPos={nestedScrollPos}
+        setScrollPos={setNestedScrollPos}
         marginTop={nestedMarginTop}
         marginBottom={nestedMarginBottom}
       >
