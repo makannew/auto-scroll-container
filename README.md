@@ -34,8 +34,8 @@ export default function App() {
 Then add `overflow-y: scroll;` to CSS style
 ```css
 .simple-scroll {
-  height: 200px; 
-  width: 300px;
+  height: 200px; // or any value 100vh
+  width: 300px; // or any value
   overflow-y: scroll;
 }
 
@@ -45,6 +45,9 @@ Now it is ready to use and take advantage of few default feature wich already pr
 - Focused element will remain in view after resize
 - On mobile device focus element remain in view after keyboard pop up
 - Void space added in top and bottom of content
+
+## Scroll Position
+To make positioning easier this component uses fractional values.
 
 ## License
 
