@@ -31,15 +31,19 @@ export default function App() {
 }
 ```
 
-Then in CSS add `overflow-y: scroll;` to its style
+And in the CSS add `overflow-y: scroll;` to its style
 ```css
 .simple-scroll {
-  height: 200px;
+  height: 200px; 
   width: 300px;
   overflow-y: scroll;
 }
 
 ```
+Now it is ready to use and take advantage of few default feature wich already provided:
+- Partially visible element came into view after focus
+- Focused element will remain in view after resize
+- On mobile device focus element remain in view after keyboard pop up
 
 ## License
 
