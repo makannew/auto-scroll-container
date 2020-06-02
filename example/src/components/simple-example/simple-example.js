@@ -4,6 +4,7 @@ import styles from '../simple-example/simple-example.module.css'
 
 export default function SimpleExample({ className, contentClass, ...rest }) {
   const [focus, setFocus] = useState()
+
   useEffect(() => {
     const prevPlaceholder = focus?.element?.placeholder
     if (focus?.element) {

@@ -145,11 +145,12 @@ form > input[name='Submit'] {
   text-align: left;
 }
 
-#active {
+#active,
+#autofocus {
   margin: 5px 7px 14px 7px;
 }
 
-#autofocus {
+#smoothmode {
   margin: 5px 7px 20px 7px;
 }
 

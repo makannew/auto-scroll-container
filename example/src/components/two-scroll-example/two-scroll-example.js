@@ -6,6 +6,7 @@ export default function TwoScrollExample({ className, contentClass, ...rest }) {
   const {
     nestedScrollPos,
     setNestedScrollPos,
+    nestedSmoothScroll,
     nestedMarginTop,
     nestedMarginBottom
   } = rest
@@ -30,6 +31,7 @@ export default function TwoScrollExample({ className, contentClass, ...rest }) {
         contentClass={styles['second-scroll-content']}
         scrollPos={nestedScrollPos}
         setScrollPos={setNestedScrollPos}
+        smoothScroll={nestedSmoothScroll}
         marginTop={nestedMarginTop}
         marginBottom={nestedMarginBottom}
       >

@@ -17,6 +17,21 @@ const App = () => {
   const [menuState, setMenuState] = useState(true)
   const [activeMode, setActiveMode] = useState(true)
   const [autoScrollOnFocus, setAutoScrollOnFocus] = useState(true)
+  const [smoothMode, setSmoothMode] = useState(true)
+  const [smoothScroll, setSmoothScroll] = useState({
+    scrollX: 0,
+    viewX: 0.1,
+    scrollY: 0,
+    viewY: 0.1
+  })
+
+  const [nestedSmoothScroll, setNestedSmoothScroll] = useState({
+    scrollX: 0,
+    viewX: 0.1,
+    scrollY: 0,
+    viewY: 0.1
+  })
+
   const [scrollPos, setScrollPos] = useState(() => ({
     scrollX: 0,
     viewX: 0.1,
@@ -31,7 +46,6 @@ const App = () => {
     scrollY: 0,
     viewY: 0.1
   })
-  // const [nestedViewY, setNestedViewY] = useState(0.1)
   const [nestedMarginTop, setNestedMarginTop] = useState(0.5)
   const [nestedMarginBottom, setNestedMarginBottom] = useState(0.5)
 
@@ -47,16 +61,36 @@ const App = () => {
     const value = e.target.value
     switch (e.target.name) {
       case 'scrollY':
-        setScrollPos((scrollPos) => ({ ...scrollPos, scrollY: value }))
+        smoothMode
+          ? setSmoothScroll((smoothScroll) => ({
+              ...smoothScroll,
+              scrollY: value
+            }))
+          : setScrollPos((scrollPos) => ({ ...scrollPos, scrollY: value }))
         break
       case 'viewY':
-        setScrollPos((scrollPos) => ({ ...scrollPos, viewY: value }))
+        smoothMode
+          ? setSmoothScroll((smoothScroll) => ({
+              ...smoothScroll,
+              viewY: value
+            }))
+          : setScrollPos((scrollPos) => ({ ...scrollPos, viewY: value }))
         break
       case 'scrollX':
-        setScrollPos((scrollPos) => ({ ...scrollPos, scrollX: value }))
+        smoothMode
+          ? setSmoothScroll((smoothScroll) => ({
+              ...smoothScroll,
+              scrollX: value
+            }))
+          : setScrollPos((scrollPos) => ({ ...scrollPos, scrollX: value }))
         break
       case 'viewX':
-        setScrollPos((scrollPos) => ({ ...scrollPos, viewX: value }))
+        smoothMode
+          ? setSmoothScroll((smoothScroll) => ({
+              ...smoothScroll,
+              viewX: value
+            }))
+          : setScrollPos((scrollPos) => ({ ...scrollPos, viewX: value }))
         break
       case 'marginTop':
         setMarginTop(value)
@@ -71,16 +105,27 @@ const App = () => {
         setMarginRight(value)
         break
       case 'nestedScrollY':
-        setNestedScrollPos((nestedScrollPos) => ({
-          ...nestedScrollPos,
-          scrollY: value
-        }))
+        smoothMode
+          ? setNestedSmoothScroll((nestedSmoothScroll) => ({
+              ...nestedSmoothScroll,
+              scrollY: value
+            }))
+          : setNestedScrollPos((nestedScrollPos) => ({
+              ...nestedScrollPos,
+              scrollY: value
+            }))
+
         break
       case 'nestedViewY':
-        setNestedScrollPos((nestedScrollPos) => ({
-          ...nestedScrollPos,
-          viewY: value
-        }))
+        smoothMode
+          ? setNestedSmoothScroll((nestedSmoothScroll) => ({
+              ...nestedSmoothScroll,
+              viewY: value
+            }))
+          : setNestedScrollPos((nestedScrollPos) => ({
+              ...nestedScrollPos,
+              viewY: value
+            }))
         break
       case 'nestedMarginTop':
         setNestedMarginTop(value)
@@ -93,6 +138,7 @@ const App = () => {
     }
   }
   const passivePara = {
+    smoothScroll,
     autoScrollOnFocus,
     scrollPos,
     marginTop,
@@ -100,6 +146,7 @@ const App = () => {
     marginLeft,
     marginRight,
     nestedScrollPos,
+    nestedSmoothScroll,
     nestedMarginTop,
     nestedMarginBottom
   }
@@ -114,14 +161,13 @@ const App = () => {
   return (
     <div className='app'>
       <div className={`options ${menuState === false ? 'options-hide' : ''}`}>
-        <h3 onClick={() => setMenuState(!menuState)}>Hide26</h3>
+        <h3 onClick={() => setMenuState(!menuState)}>Hide</h3>
         <h3
           className={`menu-button ${menuState === false ? 'visible' : ''}`}
           onClick={() => setMenuState(!menuState)}
         >
           Menu
         </h3>
-        {/* <p id='temp'>{analizer}</p> */}
         <div className='containers'>
           <button
             onClick={() => {
@@ -179,8 +225,23 @@ const App = () => {
               }}
             />
           </div>
+
+          <div>
+            <label htmlFor='smoothmode'>Smooth Scroll</label>
+            <input
+              type='checkbox'
+              id='smoothmode'
+              name='smoothmode'
+              value='smoothmode'
+              checked={smoothMode}
+              onChange={(e) => {
+                setSmoothMode(e.target.checked)
+              }}
+            />
+          </div>
+
           <label htmlFor='scrollY'>{`scrollY = ${Number(
-            scrollPos.scrollY
+            smoothMode ? smoothScroll.scrollY : scrollPos.scrollY
           ).toFixed(3)}`}</label>
           <input
             id='scrollY'
@@ -188,28 +249,28 @@ const App = () => {
             min='0'
             max='1'
             step='0.05'
-            value={scrollPos.scrollY}
+            value={smoothMode ? smoothScroll.scrollY : scrollPos.scrollY}
             name='scrollY'
             onChange={handleChange}
           />
 
-          <label htmlFor='viewY'>{`viewY = ${Number(scrollPos.viewY).toFixed(
-            3
-          )}`}</label>
+          <label htmlFor='viewY'>{`viewY = ${Number(
+            smoothMode ? smoothScroll.viewY : scrollPos.viewY
+          ).toFixed(3)}`}</label>
           <input
             id='viewY'
             type='range'
             min='0'
             max='1'
             step='0.05'
-            value={scrollPos.viewY}
+            value={smoothMode ? smoothScroll.viewY : scrollPos.viewY}
             name='viewY'
             onChange={handleChange}
           />
           {example === 2 ? (
             <>
               <label htmlFor='scrollX'>{`scrollX = ${Number(
-                scrollPos.scrollX
+                smoothMode ? smoothScroll.scrollX : scrollPos.scrollX
               ).toFixed(3)}`}</label>
               <input
                 id='scrollX'
@@ -217,13 +278,13 @@ const App = () => {
                 min='0'
                 max='1'
                 step='0.05'
-                value={scrollPos.scrollX}
+                value={smoothMode ? smoothScroll.scrollX : scrollPos.scrollX}
                 name='scrollX'
                 onChange={handleChange}
               />
 
               <label htmlFor='viewX'>{`viewX = ${Number(
-                scrollPos.viewX
+                smoothMode ? smoothScroll.viewX : scrollPos.viewX
               ).toFixed(3)}`}</label>
               <input
                 id='viewX'
@@ -231,7 +292,7 @@ const App = () => {
                 min='0'
                 max='1'
                 step='0.05'
-                value={scrollPos.viewX}
+                value={smoothMode ? smoothScroll.viewX : scrollPos.viewX}
                 name='viewX'
                 onChange={handleChange}
               />
@@ -307,7 +368,9 @@ const App = () => {
                   <h3>Nested Scroll</h3>
 
                   <label htmlFor='nestedScrollY'>{`scrollY = ${Number(
-                    nestedScrollPos.scrollY
+                    smoothMode
+                      ? nestedSmoothScroll.scrollY
+                      : nestedScrollPos.scrollY
                   ).toFixed(3)}`}</label>
                   <input
                     id='nestedScrollY'
@@ -315,13 +378,19 @@ const App = () => {
                     min='0'
                     max='1'
                     step='0.05'
-                    value={nestedScrollPos.scrollY}
+                    value={
+                      smoothMode
+                        ? nestedSmoothScroll.scrollY
+                        : nestedScrollPos.scrollY
+                    }
                     name='nestedScrollY'
                     onChange={handleChange}
                   />
 
                   <label htmlFor='nestedViewY'>{`viewY = ${Number(
-                    nestedScrollPos.viewY
+                    smoothMode
+                      ? nestedSmoothScroll.viewY
+                      : nestedScrollPos.viewY
                   ).toFixed(3)}`}</label>
                   <input
                     id='nestedViewY'
@@ -329,7 +398,11 @@ const App = () => {
                     min='0'
                     max='1'
                     step='0.05'
-                    value={nestedScrollPos.viewY}
+                    value={
+                      smoothMode
+                        ? nestedSmoothScroll.viewY
+                        : nestedScrollPos.viewY
+                    }
                     name='nestedViewY'
                     onChange={handleChange}
                   />

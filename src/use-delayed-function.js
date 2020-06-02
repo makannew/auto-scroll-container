@@ -23,22 +23,25 @@ export default function useDelayedFunction(
           reject({ message: 'Function call canceled', timestamp: Date.now() })
         }
       }
-      lastCall.timeout = setTimeout(async () => {
-        lastCall.timeout = null
-        try {
-          const result = await (originalFunction &&
-            originalFunction(...arguments))
-          lastCall.cancel = null
-          if (stillValid) {
-            resolve(result)
+      lastCall.timeout = setTimeout(
+        async () => {
+          lastCall.timeout = null
+          try {
+            const result = await (originalFunction &&
+              originalFunction(...arguments))
+            lastCall.cancel = null
+            if (stillValid) {
+              resolve(result)
+            }
+          } catch (err) {
+            lastCall.cancel = null
+            if (stillValid) {
+              reject(err)
+            }
           }
-        } catch (err) {
-          lastCall.cancel = null
-          if (stillValid) {
-            reject(err)
-          }
-        }
-      }, delay || 0)
+        },
+        typeof delay === 'object' ? delay.current || 0 : delay || 0
+      )
     })
   }
 
