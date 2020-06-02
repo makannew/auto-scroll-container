@@ -44,6 +44,7 @@ Now it is ready to use and take advantage of few default feature wich already pr
 - Partially visible element came into view after focus
 - Focused element will remain in view after resize
 - On mobile device focus element remain in view after keyboard pop up
+- Void space added in top and bottom of content
 
 ## License
 
