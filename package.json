@@ -2,6 +2,13 @@
   "name": "auto-scroll-container",
   "version": "1.0.0",
   "description": "React component provides scrollable div ",
+  "keywords": [
+    "react",
+    "component",
+    "scroll",
+    "container",
+    "scrollIntoView"
+  ],
   "author": "Makan Edrisi",
   "license": "MIT",
   "repository": "makannew/auto-scroll-container",
@@ -51,6 +58,7 @@
     "dist"
   ],
   "dependencies": {
+    "use-delayed-function": "^1.0.0",
     "use-delayed-state": "^1.0.0"
   }
 }

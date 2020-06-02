@@ -1,59 +1,261 @@
-import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
-import useDelayedState from 'use-delayed-state'
+import React, { useRef, useEffect, useLayoutEffect } from 'react'
+import useDelayedFunction from 'use-delayed-function'
 
 export const AutoScrollContainer = ({
   children,
   className = '',
   contentClass = '',
-  contentMarginTop = 0.5, // fraction of visible div size
-  contentMarginBottom = 0.5,
-  contentMarginLeft = 0,
-  contentMarginRight = 0,
-  moveScrollX = 0, // fraction of total content size
-  moveScrollY = 0,
-  defaultViewPointX = 0.1,
-  defaultViewPointY = 0.1,
-  focusBoundary = 0.05,
+  marginTop = 0.5, // fraction of visible div size
+  marginBottom = 0.5,
+  marginLeft = 0,
+  marginRight = 0,
+  scrollPos,
+  setScrollPos,
+  focus,
+  setFocus,
+  smoothScroll,
+  viewMargin = { top: 0.05, bottom: 0.05, left: 0.05, right: 0.05 },
   autoScrollOnFocus = true,
-  debouncingDelay = 200
+  debouncingDelay = 200,
+  keyboardPopDelay = 1500,
+  signature = 'data-auto-scroll-container-signature'
 }) => {
   const scrollDiv = useRef()
   const contentDiv = useRef()
   const rightMarginDiv = useRef()
-  const pos = useRef({ x: 0, offsetX: 0, y: 0, offsetY: 0 }).current
   const currentFocus = useRef(null)
-  const isAutoScrolling = useRef(false)
-  const [divSize, setDivSize] = useDelayedState(() => null)
-  const [content, setContent] = useState(() => null)
-  const [needsScroll, setNeedsScroll] = useState(() => false)
-  const [initializing, setInitializing] = useState(() => true)
+  const childObserver = useRef(null)
+  const mobileKeyboard = useRef(false)
+  const justFocused = useRef(false)
+  const prevViewMargin = useRef()
+
+  const [debounceResize] = useDelayedFunction(calcDivSize, debouncingDelay)
+  const [setJustFocusedLater] = useDelayedFunction(
+    setJustFocused,
+    keyboardPopDelay
+  )
+
+  const scroll = useRef({
+    initializing: true,
+    isAutoScrolling: false,
+    immediateChild: null,
+    divSize: undefined,
+    margins: undefined,
+    content: undefined,
+    pos: {
+      x: scrollPos.scrollX,
+      offsetX: scrollPos.viewX,
+      y: scrollPos.scrollY,
+      offsetY: scrollPos.viewY
+    }
+  }).current
+
+  function setMobileKeyboard(status) {
+    mobileKeyboard.current = status
+  }
+
+  function setJustFocused(status) {
+    justFocused.current = status
+  }
 
   const handleScroll = (e) => {
-    if (isAutoScrolling.current) {
+    if (scroll.isAutoScrolling) {
       e.stopPropagation()
-      isAutoScrolling.current = false
+      scroll.isAutoScrolling = false
       return
     }
-    setPos()
+    if (mobileKeyboard.current) {
+      scrollToNewPos({ ...scroll.pos, ...compensatedOffsets() })
+      e.stopPropagation()
+      e.preventDefault()
+      return
+    }
+    scroll.pos = currentPos()
+    setPosState()
   }
 
-  const setPos = () => {
-    if (content === null || divSize === null) return
-    const top = scrollDiv.current.scrollTop
-    const left = scrollDiv.current.scrollLeft
-    const [x, y] = currentFocus.current
-      ? relativeOffset(currentFocus.current)
-      : [
-          left + defaultViewPointX * divSize.width,
-          top + defaultViewPointY * divSize.height
-        ]
-    pos.x = (x - content.marginLeft) / content.contentWidth
-    pos.y = (y - content.marginTop) / content.contentHeight
-    pos.offsetX = (x - left) / divSize.width
-    pos.offsetY = (y - top) / divSize.height
+  const handleFocus = (e) => {
+    removeChildObserver()
+    currentFocus.current = e.target
+    if (setFocus) {
+      setFocus(() => ({ element: currentFocus.current }))
+    }
+    scroll.immediateChild = null
+    scroll.pos = currentPos()
+    addChildObserver()
+    if (autoScrollOnFocus) {
+      setJustFocused(true)
+      scrollToNewPos({ ...scroll.pos, ...compensatedOffsets() })
+      setJustFocusedLater(false)
+    }
+    setPosState()
   }
 
-  const relativeOffset = (element) => {
+  const handleBlure = (e) => {
+    removeChildObserver()
+    currentFocus.current = null
+    if (setFocus) {
+      setFocus(() => ({ element: null }))
+    }
+    scroll.pos = currentPos()
+    setPosState()
+  }
+
+  function addChildObserver() {
+    if (scroll.immediateChild === null) return
+    scroll.immediateChild.setAttribute(signature, '0')
+    childObserver.current.observe(scroll.immediateChild, {
+      attributes: true,
+      attributesFilter: [signature]
+    })
+  }
+
+  function removeChildObserver() {
+    if (scroll.immediateChild === null) return
+    childObserver.current.disconnect()
+  }
+
+  function resizeParent() {
+    const value = Number(scrollDiv.current.getAttribute(signature))
+    scrollDiv.current.setAttribute(signature, (value + 1).toString())
+  }
+
+  function resizeByChild() {
+    if (scroll.initializing) return
+    calcDivSize()
+    setMobileKeyboard(false)
+    adjustScroll()
+    resizeParent()
+  }
+
+  function handleResize() {
+    if (scroll.initializing) return
+    if (justFocused.current) {
+      setMobileKeyboard(true)
+    }
+    if (scroll.immediateChild) return
+    debounceResize().then(() => {
+      setMobileKeyboard(false)
+      adjustScroll()
+      resizeParent()
+    })
+  }
+
+  useLayoutEffect(() => {
+    scrollDiv.current.style.visibility = 'hidden'
+    setPositionRelative()
+    calcDivSize()
+    adjustScroll()
+    scroll.initializing = false
+    scrollDiv.current.style.visibility = 'visible'
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  })
+
+  useEffect(() => {
+    if (scroll.initializing) return
+    if (scrollPos.autoScroll) {
+      scrollPos.autoScroll = false
+      return
+    }
+    const { scrollX, viewX, scrollY, viewY } = scrollPos
+    scroll.pos = {
+      x: scrollX,
+      offsetX: viewX,
+      y: scrollY,
+      offsetY: viewY
+    }
+    scrollToNewPos({ ...scroll.pos })
+  }, [scrollPos])
+
+  useEffect(() => {
+    if (scroll.initializing) return
+    adjustScroll()
+  }, [marginTop, marginBottom, marginLeft, marginRight])
+
+  useEffect(() => {
+    if (scroll.initializing) return
+    if (prevViewMargin.current) {
+      const { top, bottom, left, right } = prevViewMargin.current
+      if (
+        viewMargin.top != top ||
+        viewMargin.bottom != bottom ||
+        viewMargin.left != left ||
+        viewMargin.right != right
+      ) {
+        adjustScroll()
+      }
+    }
+    return () => {
+      prevViewMargin.current = viewMargin
+    }
+  }, [viewMargin])
+
+  useEffect(() => {
+    if (!focus || !focus.element || currentFocus.current === focus.element)
+      return
+    focus.element.focus()
+  }, [focus])
+
+  useEffect(() => {
+    scrollDiv.current.setAttribute(signature, '0')
+    childObserver.current = new MutationObserver(resizeByChild)
+    return () => {
+      childObserver.current.disconnect()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!smoothScroll) return
+    const requestAnimationFrame =
+      window.requestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.msRequestAnimationFrame
+    const cancelAnimationFrame =
+      window.cancelAnimationFrame || window.mozCancelAnimationFrame
+    const {
+      smoothFunction = (x) => 1 - Math.pow(1 - x, 3), // (x) => x * x * x
+      duration = 800,
+      scrollX: fx,
+      scrollY: fy,
+      viewX: fvx,
+      viewY: fvy
+    } = smoothScroll
+    const { x: sx, y: sy, offsetX: svx, offsetY: svy } = scroll.pos
+    let startTime
+    let lastAnimationID
+    function smoothPos(timestamp) {
+      if (startTime === undefined) {
+        startTime = timestamp
+      }
+      const passedT = timestamp - startTime
+      const r = smoothFunction(passedT / duration)
+      scroll.pos = {
+        x: sx + (fx - sx) * r,
+        y: sy + (fy - sy) * r,
+        offsetX: svx + (fvx - svx) * r,
+        offsetY: svy + (fvy - svy) * r
+      }
+      scrollToNewPos({ ...scroll.pos })
+      scroll.pos = currentPos()
+      setPosState()
+      if (passedT < duration) {
+        lastAnimationID = requestAnimationFrame(smoothPos)
+      }
+    }
+    lastAnimationID = requestAnimationFrame(smoothPos)
+    return () => {
+      cancelAnimationFrame(lastAnimationID)
+    }
+  }, [smoothScroll])
+
+  function relativeOffset(element) {
     if (!element) {
       return [0, 0]
     }
@@ -66,6 +268,9 @@ export const AutoScrollContainer = ({
     ) {
       return [x, y]
     } else {
+      if (elementParent.hasAttribute(signature)) {
+        scroll.immediateChild = elementParent
+      }
       const [xParent, yParent] = relativeOffset(elementParent)
       return [
         x + xParent - elementParent.scrollLeft,
@@ -74,150 +279,153 @@ export const AutoScrollContainer = ({
     }
   }
 
-  const handleFocus = (e) => {
-    currentFocus.current = e.target
-    setPos()
-    if (autoScrollOnFocus) {
-      scrollToNewPos()
-    }
-  }
-
-  const handleBlure = (e) => {
-    currentFocus.current = null
-    setPos()
-  }
-
-  const compensatedOffsets = () => {
+  function compensatedOffsets() {
+    const { divSize, pos } = scroll
     let offsetY = pos.offsetY
     let offsetX = pos.offsetX
     if (currentFocus.current) {
       const { height, width } = currentFocus.current.getBoundingClientRect()
+      const { top = 0, bottom = 0, left = 0, right = 0 } = viewMargin
       let hRatio = height / divSize.height
       let wRatio = width / divSize.width
-      if (focusBoundary + hRatio + focusBoundary > 1) {
+      if (top + hRatio + bottom > 1) {
         if (offsetY + hRatio / 2 > 0.5) {
-          offsetY = focusBoundary
+          offsetY = top
         } else {
-          offsetY = 1 - hRatio - focusBoundary
+          offsetY = 1 - hRatio - bottom
         }
       } else {
-        if (offsetY < focusBoundary) {
-          offsetY = focusBoundary
+        if (offsetY < top) {
+          offsetY = top
         }
-        if (offsetY + hRatio > 1 - focusBoundary) {
-          offsetY = 1 - focusBoundary - hRatio
+        if (offsetY + hRatio > 1 - bottom) {
+          offsetY = 1 - bottom - hRatio
         }
       }
-      if (focusBoundary + wRatio + focusBoundary > 1) {
+      if (left + wRatio + right > 1) {
         if (offsetX + wRatio / 2 > 0.5) {
-          offsetX = focusBoundary
+          offsetX = left
         } else {
-          offsetX = 1 - wRatio - focusBoundary
+          offsetX = 1 - wRatio - right
         }
       } else {
-        if (offsetX < focusBoundary) {
-          offsetX = focusBoundary
+        if (offsetX < left) {
+          offsetX = left
         }
-        if (offsetX + wRatio > 1 - focusBoundary) {
-          offsetX = 1 - focusBoundary - wRatio
+        if (offsetX + wRatio > 1 - right) {
+          offsetX = 1 - right - wRatio
         }
       }
     }
     return { offsetY, offsetX }
   }
 
-  const scrollToNewPos = () => {
-    if (content === null) return
-    const { offsetY, offsetX } = compensatedOffsets()
-    scrollDiv.current.scrollTop =
-      pos.y * content.contentHeight -
-      offsetY * divSize.height +
-      content.marginTop
-    scrollDiv.current.scrollLeft =
-      pos.x * content.contentWidth -
-      offsetX * divSize.width +
-      content.marginLeft
-    isAutoScrolling.current = true
+  function adjustScroll() {
+    calcMargins()
+    setMargins()
+    calcContent()
+    scrollToNewPos({ ...scroll.pos, ...compensatedOffsets() })
+    scroll.pos = currentPos()
+    setPosState()
   }
 
-  useLayoutEffect(() => {
-    scrollToNewPos()
-    if (initializing) {
-      setInitializing(() => false)
+  function currentPos() {
+    const { divSize, content, margins, pos } = scroll
+    const { viewX, viewY } = scrollPos
+    const top = scrollDiv.current.scrollTop
+    const left = scrollDiv.current.scrollLeft
+    const [x, y] = currentFocus.current
+      ? relativeOffset(currentFocus.current)
+      : [left + viewX * divSize.width, top + viewY * divSize.height]
+    return {
+      x: (x - margins.left) / content.width,
+      y: (y - margins.top) / content.height,
+      offsetX: (x - left) / divSize.width,
+      offsetY: (y - top) / divSize.height
     }
-  }, [content, needsScroll])
+  }
 
-  useEffect(() => {
-    pos.x = moveScrollX
-    pos.offsetX = defaultViewPointX
-    pos.y = moveScrollY
-    pos.offsetY = defaultViewPointY
-    setNeedsScroll((needsScroll) => !needsScroll)
-  }, [moveScrollX, moveScrollY, defaultViewPointX, defaultViewPointY])
-
-  useLayoutEffect(() => {
-    if (divSize === null) return
-    const contentStyle = contentDiv.current.style
-    const marginTop = contentMarginTop * divSize.height
-    const marginBottom = contentMarginBottom * divSize.height
-    const marginLeft = contentMarginLeft * divSize.width
-    const marginRight = contentMarginRight * divSize.width
-
-    if (contentMarginTop) {
-      contentStyle.marginTop = `${marginTop}px`
-    }
-    if (contentMarginBottom) {
-      contentStyle.marginBottom = `${marginBottom}px`
-    }
-    if (contentMarginLeft) {
-      contentStyle.marginLeft = `${marginLeft}px`
-    }
-    if (contentMarginRight) {
-      rightMarginDiv.current.style.left = `${
-        scrollDiv.current.scrollWidth + marginRight
-      }px`
-    }
-
-    const scrollWidth = scrollDiv.current.scrollWidth
-    const scrollHeight = scrollDiv.current.scrollHeight
-    const contentWidth = scrollWidth - marginLeft - marginRight
-    const contentHeight = scrollHeight - marginTop - marginBottom
-    setContent(() => ({
-      marginTop,
-      marginBottom,
-      marginLeft,
-      marginRight,
-      scrollWidth,
-      scrollHeight,
-      contentWidth,
-      contentHeight
+  function setPosState() {
+    if (!setScrollPos) return
+    const {
+      pos: { x, y, offsetX, offsetY }
+    } = scroll
+    setScrollPos(() => ({
+      scrollX: x,
+      viewX: offsetX,
+      scrollY: y,
+      viewY: offsetY,
+      autoScroll: true
     }))
-  }, [
-    divSize,
-    contentMarginTop,
-    contentMarginBottom,
-    contentMarginLeft,
-    contentMarginRight
-  ])
+  }
 
-  useEffect(() => {
-    const handleResize = () => {
-      const width = scrollDiv.current.offsetWidth
-      const height = scrollDiv.current.offsetHeight
-      setDivSize(() => ({ width, height }), debouncingDelay)
-    }
-    addEventListener('resize', handleResize)
-    handleResize()
-    return () => {
-      removeEventListener('resize', handleResize)
-    }
-  }, [])
+  function scrollToNewPos({ x, y, offsetX, offsetY }) {
+    const { content, divSize, margins } = scroll
+    scroll.isAutoScrolling = true
+    scrollDiv.current.scrollTop =
+      y * content.height - offsetY * divSize.height + margins.top
+    scrollDiv.current.scrollLeft =
+      x * content.width - offsetX * divSize.width + margins.left
+  }
 
-  useLayoutEffect(() => {
+  function setPositionRelative() {
     if (getComputedStyle(scrollDiv.current).position === 'static') {
       scrollDiv.current.style.position = 'relative'
     }
-  }, [])
+  }
+
+  function calcDivSize() {
+    const rect = scrollDiv.current.getBoundingClientRect()
+    scroll.divSize = {
+      width: rect.width,
+      // mobile browsers viewport hack
+      height: Math.min(rect.height, document.documentElement.clientHeight)
+    }
+  }
+
+  function calcMargins() {
+    const {
+      divSize: { width, height }
+    } = scroll
+    scroll.margins = {
+      top: marginTop * height,
+      bottom: marginBottom * height,
+      left: marginLeft * width,
+      right: marginRight * width
+    }
+  }
+
+  function setMargins() {
+    const {
+      margins: { top, bottom, left, right }
+    } = scroll
+    const contentStyle = contentDiv.current.style
+    if (marginTop) {
+      contentStyle.marginTop = `${top}px`
+    }
+    if (marginBottom) {
+      contentStyle.marginBottom = `${bottom}px`
+    }
+    if (marginLeft) {
+      rightMarginDiv.current.style.left = `${left}px`
+      contentStyle.marginLeft = `${left}px`
+    }
+    if (marginRight) {
+      rightMarginDiv.current.style.left = `${
+        scrollDiv.current.scrollWidth + right
+      }px`
+    }
+  }
+
+  function calcContent() {
+    const {
+      margins: { top, bottom, left, right }
+    } = scroll
+    scroll.content = {
+      width: scrollDiv.current.scrollWidth - left - right,
+      height: scrollDiv.current.scrollHeight - top - bottom
+    }
+  }
 
   return (
     <div
@@ -226,7 +434,6 @@ export const AutoScrollContainer = ({
       onScroll={handleScroll}
       onFocus={handleFocus}
       onBlurCapture={handleBlure}
-      style={initializing ? { visibility: 'hidden' } : null}
     >
       <div
         ref={rightMarginDiv}

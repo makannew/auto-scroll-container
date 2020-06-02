@@ -1,6 +1,5 @@
 .scroll-container {
-  position: absolute;
-  width: 100vw;
+  flex-grow: 1;
   height: 100vh;
   overflow-x: scroll;
   overflow-y: scroll;
@@ -10,9 +9,6 @@
   width: 1200px;
   display: flex;
   justify-content: space-between;
-}
-
-.horizontal-content {
 }
 
 .form-container {

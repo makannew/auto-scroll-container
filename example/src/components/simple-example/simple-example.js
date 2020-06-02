@@ -1,22 +1,37 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../simple-example/simple-example.module.css'
 
-export default function SimpleExample() {
+export default function SimpleExample({ className, contentClass, ...rest }) {
+  const [focus, setFocus] = useState()
+
+  useEffect(() => {
+    const prevPlaceholder = focus?.element?.placeholder
+    if (focus?.element) {
+      focus.element.placeholder = 'Focused element!'
+    }
+    return () => {
+      if (focus?.element) {
+        focus.element.placeholder = prevPlaceholder
+      }
+    }
+  }, [focus])
+
   return (
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
+      focus={focus}
+      setFocus={setFocus}
+      {...rest}
     >
-      <h4 id={styles['label1']}>Scroll container</h4>
-      <h4 id={styles['label2']}>Scroll Content</h4>
       <p className='description'>
         Focused element will automatically scroll to visible area.
       </p>
 
       <div className={styles['form-container']}>
         <form>
-          <h3>Sample content 1</h3>
+          <h3>Sample form 1</h3>
 
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
@@ -41,7 +56,7 @@ export default function SimpleExample() {
       </div>
       <div className={styles['form-container']}>
         <form>
-          <h3>Sample content 2</h3>
+          <h3>Sample form 2</h3>
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
           <input type='submit' name='Submit' />

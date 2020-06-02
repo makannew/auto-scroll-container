@@ -2,13 +2,16 @@ import React from 'react'
 import { AutoScrollContainer } from 'auto-scroll-container'
 import styles from '../two-dimension-example/two-dimension-example.module.css'
 
-export default function TwoDimensionExample() {
+export default function TwoDimensionExample({
+  className,
+  contentClass,
+  ...rest
+}) {
   return (
     <AutoScrollContainer
       className={styles['scroll-container']}
       contentClass={styles['scroll-content']}
-      contentMarginLeft={0.5}
-      contentMarginRight={0.5}
+      {...rest}
     >
       <p className='description'>
         Focused element will automatically scroll to visible area.
@@ -16,7 +19,7 @@ export default function TwoDimensionExample() {
 
       <div className={styles['form-container']}>
         <form>
-          <h3>Sample content 1</h3>
+          <h3>Sample form 1</h3>
 
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
@@ -59,7 +62,7 @@ export default function TwoDimensionExample() {
       </div>
       <div className={styles['form-container']}>
         <form autoComplete='off'>
-          <h3>Sample content 2</h3>
+          <h3>Sample form 2</h3>
           <input type='text' placeholder='First Name' autoComplete='lol' />
           <input type='text' placeholder='Last Name' autoComplete='lol' />
           <textarea
