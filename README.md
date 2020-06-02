@@ -31,7 +31,7 @@ export default function App() {
 }
 ```
 
-And in the CSS add `overflow-y: scroll;` to its style
+Then add `overflow-y: scroll;` to CSS style
 ```css
 .simple-scroll {
   height: 200px; 
