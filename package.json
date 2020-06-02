@@ -58,6 +58,7 @@
     "dist"
   ],
   "dependencies": {
+    "use-delayed-function": "^1.0.0",
     "use-delayed-state": "^1.0.0"
   }
 }

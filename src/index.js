@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useLayoutEffect } from 'react'
-import useDelayedFunction from './use-delayed-function'
+import useDelayedFunction from 'use-delayed-function'
 
 export const AutoScrollContainer = ({
   children,
