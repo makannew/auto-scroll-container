@@ -203,11 +203,6 @@ export const AutoScrollContainer = ({
   }, [focus])
 
   useEffect(() => {
-    if (!smoothScroll) return
-    console.log('called')
-  }, [smoothScroll])
-
-  useEffect(() => {
     scrollDiv.current.setAttribute(signature, '0')
     childObserver.current = new MutationObserver(resizeByChild)
     return () => {
@@ -215,12 +210,50 @@ export const AutoScrollContainer = ({
     }
   }, [])
 
-  function smoothPos(smoothScroll) {
-    scroll.pos = {}
-    scrollToNewPos({ ...scroll.pos }) //? not compensated
-    scroll.pos = currentPos()
-    setPosState()
-  }
+  useEffect(() => {
+    if (!smoothScroll) return
+    const requestAnimationFrame =
+      window.requestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.msRequestAnimationFrame
+    const cancelAnimationFrame =
+      window.cancelAnimationFrame || window.mozCancelAnimationFrame
+    const {
+      smoothFunction = (x) => 1 - Math.pow(1 - x, 3), // (x) => x * x * x
+      duration = 800,
+      scrollX: fx,
+      scrollY: fy,
+      viewX: fvx,
+      viewY: fvy
+    } = smoothScroll
+    const { x: sx, y: sy, offsetX: svx, offsetY: svy } = scroll.pos
+    let startTime
+    let lastAnimationID
+    function smoothPos(timestamp) {
+      if (startTime === undefined) {
+        startTime = timestamp
+      }
+      const passedT = timestamp - startTime
+      const r = smoothFunction(passedT / duration)
+      scroll.pos = {
+        x: sx + (fx - sx) * r,
+        y: sy + (fy - sy) * r,
+        offsetX: svx + (fvx - svx) * r,
+        offsetY: svy + (fvy - svy) * r
+      }
+      scrollToNewPos({ ...scroll.pos })
+      scroll.pos = currentPos()
+      setPosState()
+      if (passedT < duration) {
+        lastAnimationID = requestAnimationFrame(smoothPos)
+      }
+    }
+    lastAnimationID = requestAnimationFrame(smoothPos)
+    return () => {
+      cancelAnimationFrame(lastAnimationID)
+    }
+  }, [smoothScroll])
 
   function relativeOffset(element) {
     if (!element) {
