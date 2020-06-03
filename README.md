@@ -22,7 +22,7 @@ import AutoScrollContainer from 'auto-scroll-container'
 
 export default function App() {
   return (
-    <AutoScrollContainer className='simple-scroll'>
+    <AutoScrollContainer className='my-scroll'>
       <p>
         Lorem200 // enough content for scrolling
       </p>
@@ -31,11 +31,19 @@ export default function App() {
 }
 ```
 
-Then add `overflow-y: scroll;` to CSS style
+Parrent node which here is `body` should be positioned and `overflow-y` should set to `scroll` in `my-scroll.
 ```css
-.simple-scroll {
-  height: 200px; // or any value 100vh
-  width: 300px; // or any value
+body {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+.my-scroll {
+  height: 100vh;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
   overflow-y: scroll;
 }
 
@@ -45,6 +53,16 @@ Now it is ready to use and take advantage of few default feature wich already pr
 - Focused element will remain in view after resize
 - On mobile device focus element remain in view after keyboard pop up
 - Void space added in top and bottom of content
+
+## Style
+Like styling scroll container we can apply style on content by passing a class name through`contentClass` prop
+```jsx
+    <AutoScrollContainer 
+      className='simple-scroll' 
+      contentClass='my-class'
+      >
+    </AutoScrollContainer>
+```
 
 ## Scroll Position
 To make positioning easier this component uses fractional values.
