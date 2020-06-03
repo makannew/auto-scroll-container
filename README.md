@@ -126,7 +126,7 @@ So above code adds 90% of the scroll view port height at the beginning and end o
 For horizontal or 2D scrolls we can set `marginLeft` and `marginRight`.
 All void spaces recalculated after view port resize, so it guarantees same void space against scroll view port.
 
-# Focus element
+## Focus element
 To bring an input element to focus we can set `focus={{ element: myElement }}`. 
 Below code bring input field to focus after mounting.
 ```jsx
