@@ -62,6 +62,7 @@ Like styling scroll container we can apply style on content by passing a class n
       contentClass='my-content-style'
       >
     </AutoScrollContainer>
+    
 ```
 
 ## Scroll navigation
@@ -76,6 +77,7 @@ By passing a prop or state to `scrollPos` we can navigate dynamically through th
       scrollPos={{ scrollY: 0.5, viewY: 0 }}
     >
     </AutoScrollContainer>
+    )
 ```
 For horizontal or 2D scrolls the prop object is `{scrollY, viewY, scrollX, viewX}`
 
@@ -89,6 +91,7 @@ By setting `smoothScroll` we can navigate to certain point smoothly.
       smoothScroll={{ scrollY: 0.3, viewY: 0.5 }}
     >
     </AutoScrollContainer>
+    )
 ```
 It accepts same values like `scrollPos` but it is optional to set `smoothFunction` and `duration` for more control.
 ```jsx
@@ -99,7 +102,7 @@ It accepts same values like `scrollPos` but it is optional to set `smoothFunctio
         duration: 2000
       }}
 ```
-Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by Andrey Sitnik and Ivan Solovev. Find more [here](https://easings.net/)
+Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by Andrey Sitnik and Ivan Solovev. Find more functions [here](https://easings.net/).
 
 ## Void space
 To make scrolling easier some voide space added by four main margins. These margins calculated as fraction of scroll view port which normalized to 1.
@@ -112,9 +115,40 @@ To make scrolling easier some voide space added by four main margins. These marg
       marginTop={0.9}
       marginBottom={0.9}
     >
+    </AutoScrollContainer>
+    )
 ```
 So above code adds 90% of the scroll view port height at the beginning and end of content. Default values are `0.5`
-For horizontal or 2D scrolls we can set `marginLeft` and `marginRight`
+For horizontal or 2D scrolls we can set `marginLeft` and `marginRight`.
+All void spaces recalculated after view port resize, so it guarantees same void space against scroll view port.
+
+# Focus element
+To bring an input element to focus we can set `focus={{ element: myElement }}`. 
+Below code bring input field to focus after mounting.
+```jsx
+export default function App() {
+  const inputRef = useRef()
+  const [initialFocus, setInitialFocus] = useState(null)
+
+  useEffect(() => {
+    setInitialFocus(inputRef.current)
+  }, [])
+
+  return (
+    <AutoScrollContainer
+      className='my-scroll-style' 
+      contentClass='my-content-style'
+      focus={{ element: initialFocus }}
+    >
+        <input
+        ref={inputRef}
+        type='text'
+        placeholder='Phone Number'
+        autoComplete='lol'
+        />
+    </AutoScrollContainer>
+    )
+```
 
 ## License
 
