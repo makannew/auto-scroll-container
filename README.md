@@ -140,6 +140,9 @@ export default function App() {
       contentClass='my-content-style'
       focus={{ element: initialFocus }}
     >
+        <p>
+        lorem200
+        </p>
         <input
         ref={inputRef}
         type='text'
@@ -149,6 +152,11 @@ export default function App() {
     </AutoScrollContainer>
     )
 ```
+
+## Active mode
+Up to here component works in passive mode. It is an stateless component which will render only once unless props changes. So scroll status will change in one way and it is usefull to set initial state of scroll or reset it to certain point.
+But sometimes we want to know realtime scroll position or focused element to decide new scroll position or apply any logic. For this purpose we can put it in active mode by passing `setFocus` or `setScrollPos` handles.
+
 
 ## License
 
