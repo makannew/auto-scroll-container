@@ -71,8 +71,8 @@ By passing a prop or state to `scrollPos` we can navigate dynamically through th
 ```jsx
   return (
     <AutoScrollContainer
-      className='simple-scroll'
-      contentClass='my-class'
+      className='my-scroll-style' 
+      contentClass='my-content-style'
       scrollPos={{ scrollY: 0.5, viewY: 0 }}
     >
     </AutoScrollContainer>
@@ -84,8 +84,8 @@ By setting `smoothScroll` we can navigate to certain point smoothly.
 ```jsx
   return (
     <AutoScrollContainer
-      className='simple-scroll'
-      contentClass='my-class'
+      className='my-scroll-style' 
+      contentClass='my-content-style'
       smoothScroll={{ scrollY: 0.3, viewY: 0.5 }}
     >
     </AutoScrollContainer>
@@ -101,7 +101,20 @@ It accepts same values like `scrollPos` but it is optional to set `smoothFunctio
 ```
 Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by Andrey Sitnik and Ivan Solovev. Find more [here](https://easings.net/)
 
+## Void space
+To make scrolling easier some voide space added by four main margins. These margins calculated as fraction of scroll view port which normalized to 1.
 
+```jsx
+  return (
+    <AutoScrollContainer
+      className='my-scroll-style' 
+      contentClass='my-content-style'
+      marginTop={0.9}
+      marginBottom={0.9}
+    >
+```
+So above code adds 90% of the scroll view port height at the beginning and end of content. Default values are `0.5`
+For horizontal or 2D scrolls we can set `marginLeft` and `marginRight`
 
 ## License
 
