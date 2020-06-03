@@ -55,7 +55,7 @@ Now it is ready to use and take advantage of few default feature wich already pr
 - Void space added in top and bottom of content
 
 ## Style
-Like styling scroll container we can apply style on content by passing a class name through`contentClass` prop
+Like scroll container we can apply style on content by passing a class name to`contentClass`
 ```jsx
     <AutoScrollContainer 
       className='my-scroll-style' 
