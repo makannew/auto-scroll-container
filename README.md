@@ -80,6 +80,7 @@ By passing a prop or state to `scrollPos` we can navigate dynamically through th
     )
 ```
 For horizontal or 2D scrolls the prop object is `{scrollY, viewY, scrollX, viewX}`
+`viewY` or `viewX` implicitly defins an user eye focus point on view port. It tells to component which part of the viewport is more important to keep in view in resize event.
 
 ## Smooth scrolling
 By setting `smoothScroll` we can navigate to certain point smoothly.
