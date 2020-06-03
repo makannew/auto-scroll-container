@@ -67,7 +67,9 @@ Like scroll container we can apply style on content by passing a class name to`c
 
 ## Scroll navigation
 To make navigation easier this component uses fractional values. It normalizes content height and scroll view port to 1.
+
 So for example if we want to show middle of the content in the beginning of the scroll view we need to set `scrollPos={{ scrollY: 0.5, viewY: 0 }}`.
+
 By passing a prop or state to `scrollPos` we can navigate dynamically through the content.
 ```jsx
   return (
@@ -156,7 +158,10 @@ export default function App() {
 ```
 
 ## Active mode
-Up to here component works in passive mode. It is an stateless component which will render only once unless props changes. So scroll status will change in one way and it is usefull to set initial state of scroll or reset it to certain point.
+Up to here component works in passive mode. It is an stateless component which will render only once unless props changes. 
+
+So scroll status will change in one way and it is usefull to set initial state of scroll or reset it to certain point.
+
 But sometimes we want to know realtime scroll position or focused element to decide new scroll position or apply any logic. For this purpose we can put it in active mode by passing `setFocus` or `setScrollPos` handles.
 
 
