@@ -161,7 +161,7 @@ const App = () => {
   return (
     <div className='app'>
       <div className={`options ${menuState === false ? 'options-hide' : ''}`}>
-        <h3 onClick={() => setMenuState(!menuState)}>Hide</h3>
+        <h3 onClick={() => setMenuState(!menuState)}>Hide!</h3>
         <h3
           className={`menu-button ${menuState === false ? 'visible' : ''}`}
           onClick={() => setMenuState(!menuState)}
