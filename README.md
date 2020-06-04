@@ -110,7 +110,7 @@ It accepts same values like `scrollPos` with optional `smoothFunction` and `dura
         duration: 2000
       }}
 ```
-Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by Andrey Sitnik and Ivan Solovev. Find more functions [here](https://easings.net/).
+Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by [Andrey Sitnik](https://sitnik.ru/en/) and [Ivan Solovev](https://solovev.one/) (Thanks guys, you are awsome!). Find more functions [here](https://easings.net/).
 
 Default `duration` is `800` milliseconds.
 
