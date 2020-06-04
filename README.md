@@ -128,13 +128,13 @@ To make scrolling easier some voide space added by four main margins. These marg
     </AutoScrollContainer>
     )
 ```
-So above code adds 90% of the scroll view port height at the beginning and end of content. Default values are `0.5`
+So above code adds void space equal to 90% of the scroll view port height at the beginning and end of content. Default values are `0.5`
 For horizontal or 2D scrolls we can set `marginLeft` and `marginRight`.
 All void spaces recalculated after view port resize, so it guarantees same void space against scroll view port.
 
 ## Focus element
 To bring an input element to focus we can set `focus={{ element: myElement }}`. 
-Below code bring input field to focus after mounting.
+Below code bring the input field to focus after mounting.
 ```jsx
 export default function App() {
   const inputRef = useRef()
@@ -166,9 +166,49 @@ export default function App() {
 ## Active mode
 Up to here component works in passive mode. It is an stateless component which will render only once unless props changes. 
 
-So scroll status will change in one way and it is usefull to set initial state of scroll or reset it to certain point.
+So scroll status will change in one way and it is usefull to set initial state of scroll it to certain point.
 
-But sometimes we want to know realtime scroll position or focused element to decide new scroll position or apply any logic. For this purpose we can put it in active mode by passing `setFocus` or `setScrollPos` handles.
+But sometimes we want to know realtime scroll position or focused element to decide new scroll position or apply our logic. For this purpose we can put it in active mode by passing `setFocus` or `setScrollPos` handles.
+In below code scrolling by user changes `scroll` state and cause re-rendering.
+```jsx
+export default function App() {
+  const [scroll, setScroll] = useState({ scrollY: 0, viewY: 0.1 })
+  return (
+    <AutoScrollContainer
+      className='my-scroll-style' 
+      contentClass='my-content-style'
+      scrollPos={scroll}
+      setScrollPos={setScroll}
+    >
+      <p>
+        lorem100
+      </p>
+      <h3>scrollY:{scroll.scrollY.toFixed(2)}</h3>
+      <h3>scrollY:{scroll.viewY.toFixed(2)}</h3>
+    </AutoScrollContainer>
+  )
+}
+```
+Below code is active focus example
+```jsx
+export default function App() {
+  const [focus, setFocus] = useState()
+
+  return (
+    <AutoScrollContainer
+      className='my-scroll-style' 
+      contentClass='my-content-style'
+      setFocus={setFocus}
+    >
+      <p>lorem100</p>
+
+      <h3>Focus:{focus ? focus.element.tagName : 'Not Focused'}</h3>
+      <input type='text' placeholder='Phone Number' autoComplete='lol' />
+    </AutoScrollContainer>
+  )
+}
+
+```
 
 
 ## License
