@@ -32,6 +32,9 @@ code {
 }
 
 .options {
+  position: relative;
+  top: 0px;
+  left: 0px;
   height: 100%;
   width: 180px;
   min-width: 180px;
@@ -41,10 +44,9 @@ code {
 }
 
 .options-hide {
+  left: -1px;
   width: 1px;
-  height: 100%;
-  min-width: 0px;
-  overflow-y: scroll;
+  min-width: 1px;
 }
 
 .menu-button {
