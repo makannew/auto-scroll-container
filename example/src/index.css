@@ -42,6 +42,7 @@ code {
 
 .options-hide {
   width: 0px;
+  height: 100%;
   min-width: 0px;
 }
 
