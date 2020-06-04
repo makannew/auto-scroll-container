@@ -211,7 +211,7 @@ export default function App() {
 
 ```
 
-## Additional Props
+## Additional less important Props
 - `viewMargin` 
   Defines boundaries of scroll view port which focus element has to be inside this boundaries. Think about it like padding.
   Its default is `viewMargin= { top: 0.05, bottom: 0.05, left: 0.05, right: 0.05 }`
