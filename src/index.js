@@ -67,14 +67,14 @@ export default function AutoScrollContainer({
 
   const handleScroll = (e) => {
     if (scroll.isAutoScrolling) {
-      e.stopPropagation()
+      // e.stopPropagation()
       scroll.isAutoScrolling = false
       return
     }
     if (mobileKeyboard.current) {
       scrollToNewPos({ ...scroll.pos, ...compensatedOffsets() })
-      e.stopPropagation()
-      e.preventDefault()
+      // e.stopPropagation()
+      // e.preventDefault()
       return
     }
     scroll.pos = currentPos()
