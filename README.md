@@ -214,7 +214,15 @@ export default function App() {
 ## Additional Props
 - `viewMargin` 
   Defines boundaries of scroll view port which focus element has to be inside this boundaries. Think about it like padding.
-  Default `viewMargin= { top: 0.05, bottom: 0.05, left: 0.05, right: 0.05 }`
+  Its default is `viewMargin= { top: 0.05, bottom: 0.05, left: 0.05, right: 0.05 }`
+- `autoScrollOnFocus`
+  Its default is `autoScrollOnFocus = true` and it means try to keep focused element in scroll view port
+- `debouncingDelay`
+  Its default is `debouncingDelay = 200` in millisecounds. During resize event it cause a delay before start to       recalculate. It helps performance by avoid unnecessary calculation
+- `keyboardPopDelay`
+ Its default is `keyboardPopDelay = 1500` milliseconds. It is for detecting mobile on screen keyboards. It means monitor `1500ms` after any focus event, If resize triggered take care of mobile keyboard.
+- `signature`
+Its default is `signature = 'data-auto-scroll-container-signature'`. This signature added to Html scroll `div` to internally intercept nested `AutoScrollContainer`. In case of name conflict you want to change it.
 
 
 ## License
