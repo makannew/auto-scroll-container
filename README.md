@@ -52,7 +52,7 @@ Now it is ready to use and take advantage of few default feature wich already pr
 - Partially visible element came into view after focus
 - Focused element will remain in view after resize
 - On mobile device focus element remain in view after keyboard pop up
-- Void space added in top and bottom of content
+- Void space added at top and bottom of content
 
 ## Style
 Like scroll container we can apply style on content by passing a class name to`contentClass`
@@ -68,7 +68,7 @@ Like scroll container we can apply style on content by passing a class name to`c
 ## Scroll navigation
 To make navigation easier this component uses fractional values. It normalizes content and scroll view port to 1.
 
-ّSlightly different than standard scrolls wich positioened by just `scrollTop` and `scrollLeft`, it accept additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
+ّSlightly different than standard scrolls wich positioned by just `scrollTop` and `scrollLeft`, it accept additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
 
 So for example if we want to show middle of the content in the beginning of the scroll view we need to set `scrollPos={{ scrollY: 0.5, viewY: 0 }}`.
 
@@ -83,7 +83,7 @@ By passing a prop or state to `scrollPos` we can navigate dynamically through th
     </AutoScrollContainer>
     )
 ```
-For horizontal or 2D scrolls the prop object is `{scrollY, viewY, scrollX, viewX}`
+For horizontal or 2D scrolls the `scrollPos` object is `{scrollY, viewY, scrollX, viewX}`
 
 `viewY` or `viewX` implicitly defins user's eye focus point on view port. It tells which part of the viewport is more important to keep in view during resize event. Its default value is `0.1`.
 
@@ -129,12 +129,12 @@ To make scrolling easier some voide space added by four main margins. These marg
     )
 ```
 So above code adds void space equal to 90% of the scroll view port height at the beginning and end of content. Default values are `0.5`
-For horizontal or 2D scrolls we can set `marginLeft` and `marginRight`.
+For horizontal or 2D scrolls we can set `marginLeft` and `marginRight` as well.
 All void spaces recalculated after view port resize, so it guarantees same void space against scroll view port.
 
 ## Focus element
 To bring an input element to focus we can set `focus={{ element: myElement }}`. 
-Below code bring the input field to focus after mounting.
+Below code bring the input field to focus just after mounting.
 ```jsx
 export default function App() {
   const inputRef = useRef()
@@ -189,7 +189,7 @@ export default function App() {
   )
 }
 ```
-Below code is active focus example
+And active focus example shows realtime focused element tag name:
 ```jsx
 export default function App() {
   const [focus, setFocus] = useState()
@@ -209,6 +209,8 @@ export default function App() {
 }
 
 ```
+
+## Props
 
 
 ## License
