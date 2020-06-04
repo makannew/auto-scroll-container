@@ -167,7 +167,7 @@ export default function App() {
 ## Active mode
 Up to here component works in passive mode. It is an stateless component which will render only once unless props changes. 
 
-So scroll status will change in one way and it is usefull to set initial state of scroll it to certain point.
+So scroll status will change in one way and it is usefull to set initial state or scroll it to a certain point.
 
 But sometimes we want to know realtime scroll position or focused element to decide new scroll position or apply our logic. For this purpose we can put it in active mode by passing `setFocus` or `setScrollPos` handles.
 In below code scrolling by user changes `scroll` state and cause re-rendering.
