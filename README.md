@@ -69,7 +69,7 @@ Like scroll container we can apply style on content by passing a class name to`c
 ## Scroll navigation
 To make navigation easier this component uses fractional values. It normalizes content and scroll view port to 1.
 
-ّSlightly different than standard scrolls wich positioned by just `scrollTop` and `scrollLeft`, it accept additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
+Slightly different than standard scrolls wich position by just `scrollTop` and `scrollLeft`, it accepts additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
 
 So for example if we want to show middle of the content in the beginning of the scroll view we need to set `scrollPos={{ scrollY: 0.5, viewY: 0 }}`.
 
@@ -111,7 +111,7 @@ It accepts same values like `scrollPos` with optional `smoothFunction` and `dura
         duration: 2000
       }}
 ```
-Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by [Andrey Sitnik](https://sitnik.ru/en/) and [Ivan Solovev](https://solovev.one/) (Thanks guys, you are awesome!). You can find more functions in [their website](https://easings.net/).
+Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeOutCubic](https://easings.net/#easeOutCubic) provided by [Andrey Sitnik](https://sitnik.ru/en/) and [Ivan Solovev](https://solovev.one/) (Thanks guys, you are awesome!). You can find more functions in [their website](https://easings.net/).
 
 Default `duration` is `800` milliseconds.
 
@@ -185,7 +185,7 @@ export default function App() {
         lorem100
       </p>
       <h3>scrollY:{scroll.scrollY.toFixed(2)}</h3>
-      <h3>scrollY:{scroll.viewY.toFixed(2)}</h3>
+      <h3>viewY:{scroll.viewY.toFixed(2)}</h3>
     </AutoScrollContainer>
   )
 }
