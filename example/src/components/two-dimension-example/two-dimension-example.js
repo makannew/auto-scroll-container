@@ -1,5 +1,5 @@
 import React from 'react'
-import { AutoScrollContainer } from 'auto-scroll-container'
+import AutoScrollContainer from 'auto-scroll-container'
 import styles from '../two-dimension-example/two-dimension-example.module.css'
 
 export default function TwoDimensionExample({

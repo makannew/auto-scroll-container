@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import useDelayedFunction from 'use-delayed-function'
 
-export const AutoScrollContainer = ({
+export default function AutoScrollContainer({
   children,
   className = '',
   contentClass = '',
-  marginTop = 0.5, // fraction of visible div size
+  marginTop = 0.5,
   marginBottom = 0.5,
   marginLeft = 0,
   marginRight = 0,
@@ -19,7 +19,7 @@ export const AutoScrollContainer = ({
   debouncingDelay = 200,
   keyboardPopDelay = 1500,
   signature = 'data-auto-scroll-container-signature'
-}) => {
+}) {
   const scrollDiv = useRef()
   const contentDiv = useRef()
   const rightMarginDiv = useRef()
@@ -34,7 +34,6 @@ export const AutoScrollContainer = ({
     setJustFocused,
     keyboardPopDelay
   )
-
   const scroll = useRef({
     initializing: true,
     isAutoScrolling: false,
@@ -43,10 +42,18 @@ export const AutoScrollContainer = ({
     margins: undefined,
     content: undefined,
     pos: {
-      x: scrollPos.scrollX,
-      offsetX: scrollPos.viewX,
-      y: scrollPos.scrollY,
-      offsetY: scrollPos.viewY
+      x: scrollPos?.scrollX || 0,
+      offsetX: scrollPos
+        ? scrollPos.viewX === undefined
+          ? 0.1
+          : scrollPos.viewX
+        : 0.1,
+      y: scrollPos?.scrollY || 0,
+      offsetY: scrollPos
+        ? scrollPos.viewY === undefined
+          ? 0.1
+          : scrollPos.viewY
+        : 0.1
     }
   }).current
 
@@ -95,7 +102,7 @@ export const AutoScrollContainer = ({
     removeChildObserver()
     currentFocus.current = null
     if (setFocus) {
-      setFocus(() => ({ element: null }))
+      setFocus(() => null)
     }
     scroll.pos = currentPos()
     setPosState()
@@ -141,15 +148,6 @@ export const AutoScrollContainer = ({
     })
   }
 
-  useLayoutEffect(() => {
-    scrollDiv.current.style.visibility = 'hidden'
-    setPositionRelative()
-    calcDivSize()
-    adjustScroll()
-    scroll.initializing = false
-    scrollDiv.current.style.visibility = 'visible'
-  }, [])
-
   useEffect(() => {
     window.addEventListener('resize', handleResize)
     return () => {
@@ -158,12 +156,12 @@ export const AutoScrollContainer = ({
   })
 
   useEffect(() => {
-    if (scroll.initializing) return
+    if (scroll.initializing || !scrollPos) return
     if (scrollPos.autoScroll) {
       scrollPos.autoScroll = false
       return
     }
-    const { scrollX, viewX, scrollY, viewY } = scrollPos
+    const { scrollX = 0, viewX = 0.1, scrollY = 0, viewY = 0.1 } = scrollPos
     scroll.pos = {
       x: scrollX,
       offsetX: viewX,
@@ -197,12 +195,6 @@ export const AutoScrollContainer = ({
   }, [viewMargin])
 
   useEffect(() => {
-    if (!focus || !focus.element || currentFocus.current === focus.element)
-      return
-    focus.element.focus()
-  }, [focus])
-
-  useEffect(() => {
     scrollDiv.current.setAttribute(signature, '0')
     childObserver.current = new MutationObserver(resizeByChild)
     return () => {
@@ -222,10 +214,10 @@ export const AutoScrollContainer = ({
     const {
       smoothFunction = (x) => 1 - Math.pow(1 - x, 3), // (x) => x * x * x
       duration = 800,
-      scrollX: fx,
-      scrollY: fy,
-      viewX: fvx,
-      viewY: fvy
+      scrollX: fx = 0,
+      scrollY: fy = 0,
+      viewX: fvx = 0.1,
+      viewY: fvy = 0.1
     } = smoothScroll
     const { x: sx, y: sy, offsetX: svx, offsetY: svy } = scroll.pos
     let startTime
@@ -254,6 +246,23 @@ export const AutoScrollContainer = ({
       cancelAnimationFrame(lastAnimationID)
     }
   }, [smoothScroll])
+
+  useEffect(() => {
+    scrollDiv.current.style.visibility = 'hidden'
+
+    setPositionRelative()
+    calcDivSize()
+    adjustScroll()
+
+    scroll.initializing = false
+    scrollDiv.current.style.visibility = 'visible'
+  }, [])
+
+  useEffect(() => {
+    if (!focus || !focus.element || currentFocus.current === focus.element)
+      return
+    focus.element.focus()
+  }, [focus])
 
   function relativeOffset(element) {
     if (!element) {
@@ -330,8 +339,8 @@ export const AutoScrollContainer = ({
   }
 
   function currentPos() {
-    const { divSize, content, margins, pos } = scroll
-    const { viewX, viewY } = scrollPos
+    const { divSize, content, margins } = scroll
+    const { viewX = 0.1, viewY = 0.1 } = scrollPos || { viewX: 0.1, viewY: 0.1 }
     const top = scrollDiv.current.scrollTop
     const left = scrollDiv.current.scrollLeft
     const [x, y] = currentFocus.current

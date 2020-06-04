@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { AutoScrollContainer } from 'auto-scroll-container'
+import AutoScrollContainer from 'auto-scroll-container'
 import styles from '../simple-example/simple-example.module.css'
 
 export default function SimpleExample({ className, contentClass, ...rest }) {
