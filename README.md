@@ -218,11 +218,11 @@ export default function App() {
 - `autoScrollOnFocus`
   Its default is `autoScrollOnFocus = true` and it means try to keep focused element in scroll view port
 - `debouncingDelay`
-  Its default is `debouncingDelay = 200` in millisecounds. During resize event it cause a delay before start to       recalculate. It helps performance by avoid unnecessary calculation
+  Its default is `debouncingDelay = 200` in millisecounds. During resize event it cause a delay before start to       recalculate. It helps performance by avoiding unnecessary calculation
 - `keyboardPopDelay`
- Its default is `keyboardPopDelay = 1500` milliseconds. It is for detecting mobile on screen keyboards. It means monitor `1500ms` after any focus event, If resize triggered take care of mobile keyboard.
+ Its default is `keyboardPopDelay = 1500` milliseconds. It is for detecting mobile keyboard. It means monitor resize events for `1500ms` after any focus event, If resize triggered take care of mobile keyboard.
 - `signature`
-Its default is `signature = 'data-auto-scroll-container-signature'`. This signature added to Html scroll `div` to internally intercept nested `AutoScrollContainer`. In case of name conflict you want to change it.
+Its default is `signature = 'data-auto-scroll-container-signature'`. This signature added to Html scroll `div` attributes to internally intercept nested `AutoScrollContainer`. In case of name conflict you want to change it.
 
 
 ## License
