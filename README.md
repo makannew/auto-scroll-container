@@ -69,7 +69,7 @@ Like scroll container we can apply style on content by passing a class name to`c
 ## Scroll navigation
 To make navigation easier this component uses fractional values. It normalizes content and scroll view port to 1.
 
-ّSlightly different than standard scrolls wich positioned by just `scrollTop` and `scrollLeft`, it accept additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
+Slightly different than standard scrolls wich position by just `scrollTop` and `scrollLeft`, it accepts additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
 
 So for example if we want to show middle of the content in the beginning of the scroll view we need to set `scrollPos={{ scrollY: 0.5, viewY: 0 }}`.
 
