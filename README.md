@@ -5,7 +5,7 @@
 
 [![NPM](https://img.shields.io/npm/v/auto-scroll-container.svg)](https://www.npmjs.com/package/auto-scroll-container) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-This component provides an easy way to put other react components in a scrollable content.
+ٍasy way to put react components in a scrollable content.
 
 ## Install
 
@@ -15,7 +15,7 @@ npm install --save auto-scroll-container
 
 ## Usage
 
-To made the most basic scroll container just pass a className to the component
+To made the most basic scroll just pass a className to the component and style it in CSS
 ```jsx
 import React, { useState } from 'react'
 import AutoScrollContainer from 'auto-scroll-container'
@@ -66,7 +66,9 @@ Like scroll container we can apply style on content by passing a class name to`c
 ```
 
 ## Scroll navigation
-To make navigation easier this component uses fractional values. It normalizes content height and scroll view port to 1.
+To make navigation easier this component uses fractional values. It normalizes content and scroll view port to 1.
+
+ّSlightly different than standard scrolls wich positioened by just `scrollTop` and `scrollLeft`, it accept additional optional values to tell where `scrollY` or `scrollX` should appear in scroll view port.
 
 So for example if we want to show middle of the content in the beginning of the scroll view we need to set `scrollPos={{ scrollY: 0.5, viewY: 0 }}`.
 
@@ -83,7 +85,9 @@ By passing a prop or state to `scrollPos` we can navigate dynamically through th
 ```
 For horizontal or 2D scrolls the prop object is `{scrollY, viewY, scrollX, viewX}`
 
-`viewY` or `viewX` implicitly defins an user eye focus point on view port. It tells to component which part of the viewport is more important to keep in view during resize event.
+`viewY` or `viewX` implicitly defins an user's eye focus point on view port. It tells which part of the viewport is more important to keep in view during resize event. Its default value is `0.1`.
+
+
 
 ## Smooth scrolling
 By setting `smoothScroll` we can navigate to certain point smoothly.
