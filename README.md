@@ -4,8 +4,8 @@
 > React component provides scrollable `div` 
 
 [![NPM](https://img.shields.io/npm/v/auto-scroll-container.svg)](https://www.npmjs.com/package/auto-scroll-container) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-ٍEasy way to put react components in a scrollable content.
+ 
+Easy way to put react components in a scrollable content.
 
 ## Install
 
