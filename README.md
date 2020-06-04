@@ -185,7 +185,7 @@ export default function App() {
         lorem100
       </p>
       <h3>scrollY:{scroll.scrollY.toFixed(2)}</h3>
-      <h3>scrollY:{scroll.viewY.toFixed(2)}</h3>
+      <h3>viewY:{scroll.viewY.toFixed(2)}</h3>
     </AutoScrollContainer>
   )
 }
