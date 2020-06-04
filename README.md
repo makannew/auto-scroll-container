@@ -85,7 +85,7 @@ By passing a prop or state to `scrollPos` we can navigate dynamically through th
 ```
 For horizontal or 2D scrolls the prop object is `{scrollY, viewY, scrollX, viewX}`
 
-`viewY` or `viewX` implicitly defins an user's eye focus point on view port. It tells which part of the viewport is more important to keep in view during resize event. Its default value is `0.1`.
+`viewY` or `viewX` implicitly defins user's eye focus point on view port. It tells which part of the viewport is more important to keep in view during resize event. Its default value is `0.1`.
 
 
 
@@ -101,7 +101,7 @@ By setting `smoothScroll` we can navigate to certain point smoothly.
     </AutoScrollContainer>
     )
 ```
-It accepts same values like `scrollPos` but it is optional to set `smoothFunction` and `duration` for more control.
+It accepts same values like `scrollPos` with optional `smoothFunction` and `duration` for more control.
 ```jsx
       smoothScroll={{
         scrollY: 0.7,
@@ -111,6 +111,8 @@ It accepts same values like `scrollPos` but it is optional to set `smoothFunctio
       }}
 ```
 Default smooth function is `smoothFunction: (x) => 1 - Math.pow(1 - x, 3)` which is [easeInOutQuart](https://easings.net/#easeInOutQuart) provided by Andrey Sitnik and Ivan Solovev. Find more functions [here](https://easings.net/).
+
+Default `duration` is `800` milliseconds.
 
 ## Void space
 To make scrolling easier some voide space added by four main margins. These margins calculated as fraction of scroll view port which normalized to 1.
